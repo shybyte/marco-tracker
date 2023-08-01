@@ -8,7 +8,7 @@ Goals:
 * **Just for me** - This tracker is just for me. I don't care about the wishes of others.
 * **Simple** - As simple as possible while still having all features I need.
 * **No distractions**
-* **Integrated simple Synthesizer** - Should have at least the capabilities of a C64 SID.
+* **Integrated simple Synthesizer** - Should have roughly the capabilities of a C64 SID but not much more.
 * **Default Instruments** - Based on the synth.
 * **Native Linux & Webbrowser** - Runs natively on Linux and in a Webbrowser. 
 * **Small** - The complete programm should fit on a 880 KB Amiga floppy disc.
