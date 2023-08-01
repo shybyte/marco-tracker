@@ -14,7 +14,7 @@ Goals:
 * **Small** - The complete programm should fit on a 880 KB Amiga floppy disc.
 * **No Plugins** - Everytime I tried to use a modern music software, 
   I have spent hours to find the right plugins, but rarely wrote a complete song. 
-* **No modular** - Everytime I tried to use a modular synth,
+* **No modular synth/routing/signals** - Everytime I tried to use a modular synth,
   I have spent hours to connect signals, but rarely wrote a complete song.  
 * **Usable for 32KB demos/games**
-* 
+
