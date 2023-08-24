@@ -77,12 +77,22 @@ export fn input(event: ?*const sapp.Event) void {
             sapp.quit();
         }
 
-        state.sound_volume = switch (ev.key_code) {
-            ._1 => 0.0,
-            ._2 => 0.1,
-            ._3 => 0.5,
-            else => 0.1,
-        };
+        switch (ev.key_code) {
+            .ESCAPE => {
+                sapp.quit();
+            },
+            .F => {
+                sapp.toggleFullscreen();
+            },
+            else => {
+                state.sound_volume = switch (ev.key_code) {
+                    ._1 => 0.0,
+                    ._2 => 0.1,
+                    ._3 => 0.5,
+                    else => 0.1,
+                };
+            },
+        }
     }
 }
 
