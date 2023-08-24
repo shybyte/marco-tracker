@@ -110,24 +110,14 @@ pub fn main() void {
         .width = 640,
         .height = 480,
         .icon = .{ .sokol_default = true },
-        .window_title = "triangle.zig",
+        .window_title = "MarcoTracker",
         .logger = .{ .func = slog.func },
     });
 }
 
 // special entry point for Emscripten build, called from src/emscripten/entry.c
 export fn emsc_main() void {
-    sapp.run(.{
-        .init_cb = init,
-        .frame_cb = frame,
-        .cleanup_cb = cleanup,
-        .event_cb = input,
-        .width = 640,
-        .height = 480,
-        .icon = .{ .sokol_default = true },
-        .window_title = "triangle.zig",
-        .logger = .{ .func = slog.func },
-    });
+    main();
 }
 
 fn shaderDesc() sg.ShaderDesc {
