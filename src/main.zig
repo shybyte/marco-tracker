@@ -73,6 +73,10 @@ export fn frame() void {
 export fn input(event: ?*const sapp.Event) void {
     const ev = event.?;
     if (ev.type == .KEY_DOWN) {
+        if (ev.key_code == sapp.Keycode.ESCAPE) {
+            sapp.quit();
+        }
+
         state.sound_volume = switch (ev.key_code) {
             ._1 => 0.0,
             ._2 => 0.1,
