@@ -5,14 +5,17 @@ const saudio = sokol.audio;
 const sapp = sokol.app;
 const sgapp = sokol.app_gfx_glue;
 
+const keymap = @import("./keymap.zig");
+const synth = @import("./synth/synth.zig");
+const SAMPLE_RATE = @import("./constants.zig").SAMPLE_RATE;
+
 const NumSamples = 32;
 
 const state = struct {
     var bind: sg.Bindings = .{};
     var pip: sg.Pipeline = .{};
-    var even_odd: u32 = 0;
+    var time: u32 = 0;
     var sample_pos: usize = 0;
-    var sound_volume: f32 = 0.1;
     var samples: [NumSamples]f32 = undefined;
 };
 
@@ -25,6 +28,7 @@ export fn init() void {
 
     saudio.setup(.{
         .buffer_frames = 256,
+        .sample_rate = SAMPLE_RATE,
         .logger = .{ .func = slog.func },
     });
 
@@ -51,14 +55,14 @@ export fn frame() void {
     var i: i32 = 0;
     while (i < num_frames) : ({
         i += 1;
-        state.even_odd += 1;
         state.sample_pos += 1;
     }) {
         if (state.sample_pos == NumSamples) {
             state.sample_pos = 0;
             _ = saudio.push(&(state.samples[0]), NumSamples);
         }
-        state.samples[state.sample_pos] = if (0 != (state.even_odd & 0x20)) state.sound_volume else -state.sound_volume;
+
+        state.samples[state.sample_pos] = synth.generate();
     }
 
     // default pass-action clears to grey
@@ -85,12 +89,9 @@ export fn input(event: ?*const sapp.Event) void {
                 sapp.toggleFullscreen();
             },
             else => {
-                state.sound_volume = switch (ev.key_code) {
-                    ._1 => 0.0,
-                    ._2 => 0.1,
-                    ._3 => 0.5,
-                    else => 0.1,
-                };
+                if (keymap.get_note_for_key(ev.key_code)) |note| {
+                    synth.playNote(note);
+                }
             },
         }
     }
