@@ -1,3 +1,4 @@
+const std = @import("std");
 const sokol = @import("sokol");
 const slog = sokol.log;
 const sg = sokol.gfx;
@@ -89,6 +90,7 @@ export fn input(event: ?*const sapp.Event) void {
                 sapp.toggleFullscreen();
             },
             else => {
+                std.log.info("key_code: {}", .{ev.key_code});
                 if (keymap.get_note_for_key(ev.key_code)) |note| {
                     synth.playNote(note);
                 }

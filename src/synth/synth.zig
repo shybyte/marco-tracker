@@ -1,4 +1,5 @@
 const notes = @import("../notes.zig");
+const std = @import("std");
 const Note = notes.Note;
 
 const Adsr = @import("./envelops.zig").Adsr;
@@ -11,6 +12,7 @@ var sin_osc: SinOsc = SinOsc{};
 
 pub fn playNote(note: Note) void {
     current_note = note;
+    std.log.info("playNote {}", .{note});
     adsr.trigger();
 }
 

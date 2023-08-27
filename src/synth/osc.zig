@@ -12,6 +12,9 @@ pub const SinOsc = struct {
 
     pub fn generate(self: *@This(), freq: f32) f32 {
         self.time += freq / SAMPLE_RATE;
+        if (self.time > 1) {
+            self.time = self.time - 1;
+        }
         return generateSin(self.time);
     }
 };
