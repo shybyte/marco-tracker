@@ -8,6 +8,7 @@ const sgapp = sokol.app_gfx_glue;
 
 const keymap = @import("./keymap.zig");
 const synth = @import("./synth/synth.zig");
+const SYSTEM_PATTERN = @import("./songs/system.zig").SYSTEM_PATTERN;
 const SAMPLE_RATE = @import("./constants.zig").SAMPLE_RATE;
 
 const NumSamples = 32;
@@ -20,7 +21,11 @@ const state = struct {
     var samples: [NumSamples]f32 = undefined;
 };
 
+const system_pattern = SYSTEM_PATTERN;
+
 export fn init() void {
+    std.log.debug("pattern {}", .{system_pattern});
+
     // slog.func("", 1, 2, "tet");
     sg.setup(.{
         .context = sgapp.context(),
