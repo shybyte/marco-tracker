@@ -1,3 +1,4 @@
+cp ../../../sokol-zig/src/sokol/debugtext.zig .
 cp ../../../sokol-zig/src/sokol/app_gfx_glue.zig .
 cp ../../../sokol-zig/src/sokol/app.zig .
 cp ../../../sokol-zig/src/sokol/audio.zig .
@@ -5,5 +6,6 @@ cp ../../../sokol-zig/src/sokol/gfx.zig .
 cp ../../../sokol-zig/src/sokol/log.zig .
 cp ../../../sokol-zig/src/sokol/c/sokol_app.h .
 cp ../../../sokol-zig/src/sokol/c/sokol_audio.h .
+cp ../../../sokol-zig/src/sokol/c/sokol_debugtext.h .
 cp ../../../sokol-zig/src/sokol/c/sokol_gfx.h .
 cp ../../../sokol-zig/src/sokol/c/sokol_log.h .

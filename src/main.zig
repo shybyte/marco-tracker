@@ -5,6 +5,7 @@ const sg = sokol.gfx;
 const saudio = sokol.audio;
 const sapp = sokol.app;
 const sgapp = sokol.app_gfx_glue;
+const sdtx = sokol.debugtext;
 
 const keymap = @import("./keymap.zig");
 const synth = @import("./synth/synth.zig");
@@ -23,6 +24,23 @@ const state = struct {
 
 const system_pattern = SYSTEM_PATTERN;
 
+// font indices
+const C64 = 0;
+
+fn printFont(font_index: u32, title: [:0]const u8, r: u8, g: u8, b: u8) void {
+    sdtx.font(font_index);
+    sdtx.color3b(r, g, b);
+    sdtx.puts(title);
+    var c: u16 = 32;
+    while (c < 256) : (c += 1) {
+        sdtx.putc(@intCast(c));
+        if (((c + 1) & 63) == 0) {
+            sdtx.crlf();
+        }
+    }
+    sdtx.crlf();
+}
+
 export fn init() void {
     std.log.debug("pattern {}", .{system_pattern});
 
@@ -31,6 +49,11 @@ export fn init() void {
         .context = sgapp.context(),
         .logger = .{ .func = slog.func },
     });
+
+    // setup sokol-debugtext with all builtin fonts
+    var sdtx_desc: sdtx.Desc = .{ .logger = .{ .func = slog.func } };
+    sdtx_desc.fonts[C64] = sdtx.fontC64();
+    sdtx.setup(sdtx_desc);
 
     saudio.setup(.{
         .buffer_frames = 256,
@@ -73,9 +96,22 @@ export fn frame() void {
 
     // default pass-action clears to grey
     sg.beginDefaultPass(.{}, sapp.width(), sapp.height());
+
     sg.applyPipeline(state.pip);
     sg.applyBindings(state.bind);
     sg.draw(0, 3, 1);
+
+    // set virtual canvas size to half display size so that
+    // glyphs are 16x16 display pixels
+    sdtx.canvas(sapp.widthf() * 0.5, sapp.heightf() * 0.5);
+    sdtx.origin(0.0, 2.0);
+    sdtx.home();
+
+    // draw all font characters
+    printFont(C64, "C64:\n", 0x79, 0x86, 0xcb);
+
+    sdtx.draw();
+
     sg.endPass();
     sg.commit();
 }
