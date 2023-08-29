@@ -2,6 +2,10 @@ const std = @import("std");
 
 pub const Note = u8;
 
+pub const C0 = 12;
+
+pub const C1 = 24;
+
 pub const A2 = A4 - 24;
 
 pub const C3 = A2 + 3;

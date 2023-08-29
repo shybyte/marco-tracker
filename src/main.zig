@@ -11,6 +11,7 @@ const keymap = @import("./keymap.zig");
 const synth = @import("./synth/synth.zig");
 const SYSTEM_PATTERN = @import("./songs/system.zig").SYSTEM_PATTERN;
 const SAMPLE_RATE = @import("./constants.zig").SAMPLE_RATE;
+const patternUi = @import("./ui/pattern.zig");
 
 const NumSamples = 32;
 
@@ -26,20 +27,6 @@ const system_pattern = SYSTEM_PATTERN;
 
 // font indices
 const C64 = 0;
-
-fn printFont(font_index: u32, title: [:0]const u8, r: u8, g: u8, b: u8) void {
-    sdtx.font(font_index);
-    sdtx.color3b(r, g, b);
-    sdtx.puts(title);
-    var c: u16 = 32;
-    while (c < 256) : (c += 1) {
-        sdtx.putc(@intCast(c));
-        if (((c + 1) & 63) == 0) {
-            sdtx.crlf();
-        }
-    }
-    sdtx.crlf();
-}
 
 export fn init() void {
     std.log.debug("pattern {}", .{system_pattern});
@@ -101,16 +88,7 @@ export fn frame() void {
     sg.applyBindings(state.bind);
     sg.draw(0, 3, 1);
 
-    // set virtual canvas size to half display size so that
-    // glyphs are 16x16 display pixels
-    sdtx.canvas(sapp.widthf() * 0.5, sapp.heightf() * 0.5);
-    sdtx.origin(0.0, 2.0);
-    sdtx.home();
-
-    // draw all font characters
-    printFont(C64, "C64:\n", 0x79, 0x86, 0xcb);
-
-    sdtx.draw();
+    patternUi.drawPattern(system_pattern);
 
     sg.endPass();
     sg.commit();
@@ -151,8 +129,8 @@ pub fn main() void {
         .frame_cb = frame,
         .cleanup_cb = cleanup,
         .event_cb = input,
-        .width = 640,
-        .height = 480,
+        .width = 800,
+        .height = 600,
         .icon = .{ .sokol_default = true },
         .window_title = "MarcoTracker",
         .logger = .{ .func = slog.func },
