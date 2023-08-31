@@ -9,9 +9,10 @@ const sdtx = sokol.debugtext;
 
 const keymap = @import("./keymap.zig");
 const synth = @import("./synth/synth.zig");
-const SYSTEM_PATTERN = @import("./songs/system.zig").SYSTEM_PATTERN;
+const SYSTEM = @import("./songs/system.zig").SYSTEM;
 const SAMPLE_RATE = @import("./constants.zig").SAMPLE_RATE;
-const patternUi = @import("./ui/pattern.zig");
+const ui = @import("./ui/index.zig");
+const song_splayer = @import("./player.zig");
 
 const NumSamples = 32;
 
@@ -23,13 +24,11 @@ const state = struct {
     var samples: [NumSamples]f32 = undefined;
 };
 
-const system_pattern = SYSTEM_PATTERN;
-
 // font indices
 const C64 = 0;
 
 export fn init() void {
-    std.log.debug("pattern {}", .{system_pattern});
+    // std.log.debug("pattern {}", .{system_pattern});
 
     // slog.func("", 1, 2, "tet");
     sg.setup(.{
@@ -64,6 +63,8 @@ export fn init() void {
     pip_desc.layout.attrs[0].format = .FLOAT3;
     pip_desc.layout.attrs[1].format = .FLOAT4;
     state.pip = sg.makePipeline(pip_desc);
+
+    song_splayer.setSong(SYSTEM);
 }
 
 export fn frame() void {
@@ -78,7 +79,7 @@ export fn frame() void {
             _ = saudio.push(&(state.samples[0]), NumSamples);
         }
 
-        state.samples[state.sample_pos] = synth.generate();
+        state.samples[state.sample_pos] = song_splayer.generate();
     }
 
     // default pass-action clears to grey
@@ -88,7 +89,7 @@ export fn frame() void {
     sg.applyBindings(state.bind);
     sg.draw(0, 3, 1);
 
-    patternUi.drawPattern(system_pattern);
+    ui.draw();
 
     sg.endPass();
     sg.commit();

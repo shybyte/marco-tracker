@@ -44,3 +44,9 @@ pub const SYSTEM_PATTERN: song.Pattern = song.Pattern{
         .{ .note = n.A5 },
     },
 };
+
+var PATTERNS = [_]song.Pattern{SYSTEM_PATTERN};
+
+pub const SYSTEM: song.Song = .{
+    .patterns = &PATTERNS,
+};

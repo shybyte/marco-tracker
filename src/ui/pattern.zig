@@ -8,7 +8,7 @@ const song = @import("../song.zig");
 const FONT_SCALE_FACTOR = 2;
 
 pub fn drawPattern(pattern: song.Pattern) void {
-    std.log.debug("Width/Height: {d} {d}", .{ sapp.widthf(), sapp.heightf() });
+    // std.log.debug("Width/Height: {d} {d}", .{ sapp.widthf(), sapp.heightf() });
     sdtx.canvas(sapp.widthf() / FONT_SCALE_FACTOR, sapp.heightf() / FONT_SCALE_FACTOR);
     sdtx.origin(0, 0);
 

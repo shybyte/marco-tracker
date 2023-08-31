@@ -12,7 +12,7 @@ var sin_osc: SinOsc = SinOsc{};
 
 pub fn playNote(note: Note) void {
     current_note = note;
-    std.log.info("playNote {}", .{note});
+    // std.log.info("playNote {}", .{note});
     adsr.trigger();
 }
 
