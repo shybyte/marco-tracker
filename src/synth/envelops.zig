@@ -9,7 +9,7 @@ pub const Adsr = struct {
 
     pub fn generate(self: *@This()) f32 {
         if (self.value > 0) {
-            self.value = self.value - 0.0001;
+            self.value = self.value - 0.00002;
         }
         return self.value;
     }

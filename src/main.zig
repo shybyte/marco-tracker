@@ -42,7 +42,8 @@ export fn init() void {
     sdtx.setup(sdtx_desc);
 
     saudio.setup(.{
-        .buffer_frames = 256,
+        .buffer_frames = 2048,
+        .num_channels = 2,
         .sample_rate = SAMPLE_RATE,
         .logger = .{ .func = slog.func },
     });
@@ -72,14 +73,18 @@ export fn frame() void {
     var i: i32 = 0;
     while (i < num_frames) : ({
         i += 1;
-        state.sample_pos += 1;
     }) {
         if (state.sample_pos == NumSamples) {
             state.sample_pos = 0;
-            _ = saudio.push(&(state.samples[0]), NumSamples);
+            _ = saudio.push(&(state.samples[0]), NumSamples / 2);
         }
 
-        state.samples[state.sample_pos] = song_splayer.generate();
+        const signal = song_splayer.generate() * 0.2;
+        // std.log.debug("value {d}", .{signal});
+        state.samples[state.sample_pos] = signal;
+        state.sample_pos += 1;
+        state.samples[state.sample_pos] = signal;
+        state.sample_pos += 1;
     }
 
     // default pass-action clears to grey

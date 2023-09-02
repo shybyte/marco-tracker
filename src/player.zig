@@ -13,7 +13,7 @@ pub fn getCurrentPattern() song.Pattern {
     return current_song.patterns[0];
 }
 
-const pos_delta = 0.00015;
+const pos_delta = 0.00018;
 
 pub fn generate() f32 {
     const rows = getCurrentPattern().rows;

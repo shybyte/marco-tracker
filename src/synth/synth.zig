@@ -3,12 +3,12 @@ const std = @import("std");
 const Note = notes.Note;
 
 const Adsr = @import("./envelops.zig").Adsr;
-const SinOsc = @import("./osc.zig").SinOsc;
+const Osc = @import("./osc.zig").Osc;
 
 var current_note: Note = notes.A4;
 
 var adsr: Adsr = Adsr{};
-var sin_osc: SinOsc = SinOsc{};
+var osc: Osc = Osc{};
 
 pub fn playNote(note: Note) void {
     current_note = note;
@@ -17,5 +17,5 @@ pub fn playNote(note: Note) void {
 }
 
 pub fn generate() f32 {
-    return sin_osc.generate(notes.midiNoteFrequency(current_note)) * adsr.generate();
+    return osc.generate(notes.midiNoteFrequency(current_note)) * adsr.generate();
 }

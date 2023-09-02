@@ -5,14 +5,18 @@ pub const Note = u8;
 pub const C0 = 12;
 
 pub const C1 = 24;
+pub const C2 = 36;
+pub const F2 = C2 + 5;
 
 pub const A2 = A4 - 24;
 
 pub const C3 = A2 + 3;
+pub const D3 = C3 + 2;
 pub const F3 = C3 + 5;
 pub const A3 = A4 - 12;
 
 pub const C4 = A3 + 3;
+pub const Cis4 = C4 + 1;
 pub const D4 = C4 + 2;
 pub const F4 = C4 + 5;
 

@@ -2,8 +2,8 @@ const sokol = @import("sokol");
 const sapp = sokol.app;
 const notes = @import("./notes.zig");
 
-const BASE_NOTE_LOW = notes.A4 - 12 + 3;
-const BASE_NOTE_HIGH = notes.A4 + 3;
+const BASE_NOTE_LOW = notes.C4;
+const BASE_NOTE_HIGH = notes.C5;
 
 pub fn get_note_for_key(key_code: sapp.Keycode) ?notes.Note {
     return switch (key_code) {
