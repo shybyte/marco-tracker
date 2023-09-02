@@ -49,7 +49,7 @@ export fn init() void {
     sdtx.setup(sdtx_desc);
 
     saudio.setup(.{
-        .buffer_frames = 2048,
+        .buffer_frames = 512,
         .num_channels = 2,
         .sample_rate = SAMPLE_RATE,
         .logger = .{ .func = slog.func },
