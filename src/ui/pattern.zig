@@ -7,14 +7,22 @@ const song = @import("../song.zig");
 
 const FONT_SCALE_FACTOR = 2;
 
-pub fn drawPattern(pattern: song.Pattern) void {
+pub fn drawPattern(pattern: song.Pattern, playing_row: usize) void {
     // std.log.debug("Width/Height: {d} {d}", .{ sapp.widthf(), sapp.heightf() });
     sdtx.canvas(sapp.widthf() / FONT_SCALE_FACTOR, sapp.heightf() / FONT_SCALE_FACTOR);
     sdtx.origin(0, 0);
 
     sdtx.home();
 
-    for (pattern.rows) |row| {
+    for (pattern.rows, 0..) |row, i| {
+        if (i == playing_row) {
+            sdtx.color3f(1, 1, 1);
+        } else if (i % 4 == 0) {
+            sdtx.color3f(0.8, 0.8, 0.8);
+        } else {
+            sdtx.color3f(0.5, 0.5, 0.6);
+        }
+
         if (row.note) |note| {
             drawNote(note);
         } else {

@@ -24,6 +24,8 @@ const state = struct {
     var samples: [NumSamples]f32 = undefined;
 };
 
+var pass_action: sg.PassAction = .{};
+
 // font indices
 const C64 = 0;
 
@@ -35,6 +37,11 @@ export fn init() void {
         .context = sgapp.context(),
         .logger = .{ .func = slog.func },
     });
+
+    pass_action.colors[0] = .{
+        .load_action = .CLEAR,
+        .clear_value = .{ .r = 0, .g = 0, .b = 0, .a = 1 },
+    };
 
     // setup sokol-debugtext with all builtin fonts
     var sdtx_desc: sdtx.Desc = .{ .logger = .{ .func = slog.func } };
@@ -88,7 +95,7 @@ export fn frame() void {
     }
 
     // default pass-action clears to grey
-    sg.beginDefaultPass(.{}, sapp.width(), sapp.height());
+    sg.beginDefaultPass(pass_action, sapp.width(), sapp.height());
 
     sg.applyPipeline(state.pip);
     sg.applyBindings(state.bind);

@@ -22,6 +22,10 @@ pub fn getCurrentPattern() song.Pattern {
     return current_song.patterns[0];
 }
 
+pub fn getCurrentPatternPlayingPos() usize {
+    return @intFromFloat(current_pos);
+}
+
 const pos_delta = 0.00018;
 
 pub fn generate() f32 {
