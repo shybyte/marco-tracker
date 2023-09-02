@@ -2,11 +2,20 @@ const song = @import("./song.zig");
 const synth = @import("./synth/synth.zig");
 
 var current_song = song.EMPTY_SONG;
-
+var is_playing = true;
 var current_pos: f32 = 0;
 
 pub fn setSong(song_arg: song.Song) void {
     current_song = song_arg;
+}
+
+pub fn start() void {
+    is_playing = true;
+    current_pos = 0;
+}
+
+pub fn stop() void {
+    is_playing = false;
 }
 
 pub fn getCurrentPattern() song.Pattern {
@@ -16,6 +25,10 @@ pub fn getCurrentPattern() song.Pattern {
 const pos_delta = 0.00018;
 
 pub fn generate() f32 {
+    if (!is_playing) {
+        return 0;
+    }
+
     const rows = getCurrentPattern().rows;
     const current_row_index = @floor(current_pos);
     if (@floor(current_pos - pos_delta) != current_row_index) {

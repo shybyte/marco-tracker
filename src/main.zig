@@ -114,6 +114,12 @@ export fn input(event: ?*const sapp.Event) void {
             .F => {
                 sapp.toggleFullscreen();
             },
+            .F2 => {
+                song_splayer.start();
+            },
+            .F4 => {
+                song_splayer.stop();
+            },
             else => {
                 std.log.info("key_code: {}", .{ev.key_code});
                 if (keymap.get_note_for_key(ev.key_code)) |note| {
