@@ -2,10 +2,19 @@ const sokol = @import("sokol");
 const sapp = sokol.app;
 const notes = @import("./notes.zig");
 
+pub const BASE_LOW_OCTAVE: u8 = 4;
 const BASE_NOTE_LOW = notes.C4;
 const BASE_NOTE_HIGH = notes.C5;
 
-pub fn get_note_for_key(key_code: sapp.Keycode) ?notes.Note {
+pub fn get_note_for_key(key_code: sapp.Keycode, octave: u8) ?notes.Note {
+    if (get_raw_note_for_key(key_code)) |raw_note| {
+        return raw_note + octave * 12 - BASE_LOW_OCTAVE * 12;
+    } else {
+        return null;
+    }
+}
+
+fn get_raw_note_for_key(key_code: sapp.Keycode) ?notes.Note {
     return switch (key_code) {
         .Y => BASE_NOTE_LOW,
         .S => BASE_NOTE_LOW + 1,

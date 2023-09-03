@@ -11,9 +11,10 @@ const draw_pattern = @import("./pattern.zig").drawPattern;
 
 var pattern_edit_row_index: usize = 0;
 var row_step: usize = 0;
+var octave: u8 = 4;
 var edit_mode = true;
 
-const ChainCommand = enum { set_step };
+const ChainCommand = enum { set_step, set_octave };
 
 var chain_command: ?ChainCommand = null;
 
@@ -30,11 +31,18 @@ pub fn onInput(event: ?*const sapp.Event) void {
         if (chain_command) |command| {
             switch (command) {
                 .set_step => {
-                    std.log.info("key_code: {}", .{@intFromEnum(ev.key_code)});
                     const key_code_int = @intFromEnum(ev.key_code);
                     if (@intFromEnum(sapp.Keycode._0) <= key_code_int and key_code_int <= @intFromEnum(sapp.Keycode._9)) {
                         row_step = @intCast(key_code_int - @intFromEnum(sapp.Keycode._0));
                         std.log.info("row_step: {}", .{row_step});
+                    }
+                    chain_command = null;
+                },
+                .set_octave => {
+                    const key_code_int = @intFromEnum(ev.key_code);
+                    if (@intFromEnum(sapp.Keycode._0) <= key_code_int and key_code_int <= @intFromEnum(sapp.Keycode._9)) {
+                        octave = @intCast(key_code_int - @intFromEnum(sapp.Keycode._0));
+                        std.log.info("octave: {}", .{octave});
                     }
                     chain_command = null;
                 },
@@ -46,6 +54,9 @@ pub fn onInput(event: ?*const sapp.Event) void {
             switch (ev.key_code) {
                 .S => {
                     chain_command = ChainCommand.set_step;
+                },
+                .O => {
+                    chain_command = ChainCommand.set_octave;
                 },
                 else => {},
             }
@@ -68,7 +79,7 @@ pub fn onInput(event: ?*const sapp.Event) void {
             },
             else => {
                 std.log.info("key_code: {}", .{ev.key_code});
-                if (keymap.get_note_for_key(ev.key_code)) |note| {
+                if (keymap.get_note_for_key(ev.key_code, octave)) |note| {
                     if (edit_mode) {
                         current_pattern.rows[pattern_edit_row_index].note = note;
                         pattern_edit_row_index = (pattern_edit_row_index + row_step) % current_pattern.rows.len;
