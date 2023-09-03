@@ -18,8 +18,12 @@ pub fn stop() void {
     is_playing = false;
 }
 
-pub fn getCurrentPattern() song.Pattern {
-    return current_song.patterns[0];
+pub fn togglePlaying() void {
+    is_playing = !is_playing;
+}
+
+pub fn getCurrentPattern() *song.Pattern {
+    return &current_song.patterns[0];
 }
 
 pub fn getCurrentPatternPlayingPos() usize {
@@ -30,7 +34,7 @@ const pos_delta = 0.00018;
 
 pub fn generate() f32 {
     if (!is_playing) {
-        return 0;
+        return synth.generate();
     }
 
     const rows = getCurrentPattern().rows;

@@ -11,7 +11,7 @@ const keymap = @import("./keymap.zig");
 const synth = @import("./synth/synth.zig");
 const SYSTEM = @import("./songs/system.zig").SYSTEM;
 const SAMPLE_RATE = @import("./constants.zig").SAMPLE_RATE;
-const ui = @import("./ui/index.zig");
+const ui = @import("./ui/ui.zig");
 const song_splayer = @import("./player.zig");
 
 const NumSamples = 32;
@@ -127,11 +127,11 @@ export fn input(event: ?*const sapp.Event) void {
             .F4 => {
                 song_splayer.stop();
             },
+            .SPACE => {
+                song_splayer.togglePlaying();
+            },
             else => {
-                std.log.info("key_code: {}", .{ev.key_code});
-                if (keymap.get_note_for_key(ev.key_code)) |note| {
-                    synth.playNote(note);
-                }
+                ui.onInput(event);
             },
         }
     }
