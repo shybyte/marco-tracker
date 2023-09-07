@@ -140,13 +140,21 @@ export fn input(event: ?*const sapp.Event) void {
             .SPACE => {
                 song_splayer.togglePlaying();
             },
-            .W => {
-                storage.saveSong(song_splayer.getSong()) catch |err| {
-                    std.log.debug("Error {}", .{err});
-                };
-            },
             else => {
-                ui.onInput(event);
+                if (ev.modifiers == sapp.modifier_alt) {
+                    switch (ev.key_code) {
+                        .W => {
+                            storage.saveSong(song_splayer.getSong()) catch |err| {
+                                std.log.debug("Error {}", .{err});
+                            };
+                        },
+                        else => {
+                            ui.onInput(event);
+                        },
+                    }
+                } else {
+                    ui.onInput(event);
+                }
             },
         }
     }
