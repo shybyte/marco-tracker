@@ -13,6 +13,7 @@ const SYSTEM = @import("./songs/system.zig").SYSTEM;
 const SAMPLE_RATE = @import("./constants.zig").SAMPLE_RATE;
 const ui = @import("./ui/ui.zig");
 const song_splayer = @import("./player.zig");
+const storage = @import("./storage.zig");
 
 const NumSamples = 32;
 
@@ -30,7 +31,6 @@ var pass_action: sg.PassAction = .{};
 const C64 = 0;
 
 export fn init() void {
-    // std.log.debug("pattern {}", .{system_pattern});
 
     // slog.func("", 1, 2, "tet");
     sg.setup(.{
@@ -72,7 +72,13 @@ export fn init() void {
     pip_desc.layout.attrs[1].format = .FLOAT4;
     state.pip = sg.makePipeline(pip_desc);
 
-    song_splayer.setSong(SYSTEM);
+    const song_or_err = storage.loadSong();
+    if (song_or_err) |song| {
+        song_splayer.setSong(song);
+    } else |err| {
+        std.log.debug("Error {}", .{err});
+        song_splayer.setSong(SYSTEM);
+    }
 }
 
 export fn frame() void {
@@ -129,6 +135,11 @@ export fn input(event: ?*const sapp.Event) void {
             },
             .SPACE => {
                 song_splayer.togglePlaying();
+            },
+            .W => {
+                storage.saveSong(song_splayer.getSong()) catch |err| {
+                    std.log.debug("Error {}", .{err});
+                };
             },
             else => {
                 ui.onInput(event);

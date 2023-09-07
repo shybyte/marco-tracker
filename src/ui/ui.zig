@@ -8,6 +8,7 @@ const keymap = @import("../keymap.zig");
 const synth = @import("../synth/synth.zig");
 const song_player = @import("../player.zig");
 const draw_pattern = @import("./pattern.zig").drawPattern;
+const storage = @import("../storage.zig");
 
 var pattern_edit_row_index: usize = 0;
 var row_step: usize = 0;
@@ -58,11 +59,6 @@ pub fn onInput(event: ?*const sapp.Event) void {
                 .O => {
                     chain_command = ChainCommand.set_octave;
                 },
-                .W => {
-                    saveFile() catch |err| {
-                        std.log.debug("Error {}", .{err});
-                    };
-                },
                 else => {},
             }
             return;
@@ -94,21 +90,4 @@ pub fn onInput(event: ?*const sapp.Event) void {
             },
         }
     }
-}
-
-fn saveFile() !void {
-    var string_buffer = std.ArrayList(u8).init(std.heap.page_allocator);
-    defer string_buffer.deinit();
-
-    try std.json.stringify(song_player.getSong(), .{ .whitespace = .indent_2 }, string_buffer.writer());
-    const json_string = try string_buffer.toOwnedSlice();
-    std.log.debug("json {s}", .{json_string});
-
-    const file = try std.fs.cwd().createFile(
-        "songs/system.json",
-        .{ .read = true },
-    );
-    defer file.close();
-
-    try file.writeAll(json_string);
 }
