@@ -14,6 +14,7 @@ const SAMPLE_RATE = @import("./constants.zig").SAMPLE_RATE;
 const ui = @import("./ui/ui.zig");
 const song_splayer = @import("./player.zig");
 const storage = @import("./storage.zig");
+const Song = @import("./song.zig").Song;
 
 const NumSamples = 32;
 
@@ -26,6 +27,8 @@ const state = struct {
 };
 
 var pass_action: sg.PassAction = .{};
+
+var parsed_song: ?std.json.Parsed(Song) = null;
 
 // font indices
 const C64 = 0;
@@ -74,6 +77,7 @@ export fn init() void {
 
     const song_or_err = storage.loadSong(std.heap.page_allocator);
     if (song_or_err) |song| {
+        parsed_song = song;
         song_splayer.setSong(song.value);
     } else |err| {
         std.log.debug("Error {}", .{err});
@@ -151,6 +155,8 @@ export fn input(event: ?*const sapp.Event) void {
 export fn cleanup() void {
     saudio.shutdown();
     sg.shutdown();
+
+    if (parsed_song) |song| song.deinit();
 }
 
 pub fn main() void {
