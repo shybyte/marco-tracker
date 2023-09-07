@@ -72,9 +72,9 @@ export fn init() void {
     pip_desc.layout.attrs[1].format = .FLOAT4;
     state.pip = sg.makePipeline(pip_desc);
 
-    const song_or_err = storage.loadSong();
+    const song_or_err = storage.loadSong(std.heap.page_allocator);
     if (song_or_err) |song| {
-        song_splayer.setSong(song);
+        song_splayer.setSong(song.value);
     } else |err| {
         std.log.debug("Error {}", .{err});
         song_splayer.setSong(SYSTEM);

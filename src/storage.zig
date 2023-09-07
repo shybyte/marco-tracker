@@ -4,15 +4,12 @@ const Song = song_module.Song;
 
 const FILE_NAME = "songs/system.json";
 
-pub fn loadSong() !Song {
-    const allocator = std.heap.page_allocator;
-
+pub fn loadSong(allocator: std.mem.Allocator) !std.json.Parsed(Song) {
     const json_string = try std.fs.cwd().readFileAlloc(allocator, FILE_NAME, 1024 * 1024);
     defer allocator.free(json_string);
 
     const loaded_song = try std.json.parseFromSlice(Song, allocator, json_string, .{});
-
-    return loaded_song.value;
+    return loaded_song;
 }
 
 pub fn saveSong(song: *Song) !void {
@@ -30,4 +27,11 @@ pub fn saveSong(song: *Song) !void {
     defer file.close();
 
     try file.writeAll(json_string);
+}
+
+test "loadSong" {
+    const parsed_song = try loadSong(std.testing.allocator);
+    defer parsed_song.deinit();
+
+    try std.testing.expect(parsed_song.value.patterns.len == 1);
 }

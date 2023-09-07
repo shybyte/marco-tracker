@@ -49,5 +49,16 @@
                 "$zig"
             ]
         },
+        {
+            "label": "run storage test",
+            "type": "shell",
+            "command": "zig test src/storage.zig",
+            "problemMatcher": [
+                "$zig"
+            ],
+            "presentation": {
+                "clear": true
+            }
+        },
     ]
 }
