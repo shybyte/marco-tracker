@@ -1,0 +1,104 @@
+{
+  "patterns": [
+    {
+      "rows": [
+        {
+          "note": 45
+        },
+        {
+          "note": null
+        },
+        {
+          "note": 57
+        },
+        {
+          "note": 60
+        },
+        {
+          "note": 45
+        },
+        {
+          "note": null
+        },
+        {
+          "note": 57
+        },
+        {
+          "note": 60
+        },
+        {
+          "note": 41
+        },
+        {
+          "note": null
+        },
+        {
+          "note": 53
+        },
+        {
+          "note": 60
+        },
+        {
+          "note": 41
+        },
+        {
+          "note": 53
+        },
+        {
+          "note": 60
+        },
+        {
+          "note": null
+        },
+        {
+          "note": 50
+        },
+        {
+          "note": null
+        },
+        {
+          "note": 62
+        },
+        {
+          "note": 74
+        },
+        {
+          "note": 50
+        },
+        {
+          "note": 62
+        },
+        {
+          "note": 65
+        },
+        {
+          "note": null
+        },
+        {
+          "note": 50
+        },
+        {
+          "note": null
+        },
+        {
+          "note": 61
+        },
+        {
+          "note": 62
+        },
+        {
+          "note": null
+        },
+        {
+          "note": null
+        },
+        {
+          "note": 65
+        },
+        {
+          "note": 69
+        }
+      ]
+    }
+  ]
+}

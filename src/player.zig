@@ -9,6 +9,10 @@ pub fn setSong(song_arg: song.Song) void {
     current_song = song_arg;
 }
 
+pub fn getSong() *song.Song {
+    return &current_song;
+}
+
 pub fn start() void {
     is_playing = true;
     current_pos = 0;
