@@ -12,7 +12,7 @@ pub fn loadSong(allocator: std.mem.Allocator) !std.json.Parsed(Song) {
     return loaded_song;
 }
 
-pub fn saveSong(song: *Song) !void {
+pub fn saveSong(song: *const Song) !void {
     var string_buffer = std.ArrayList(u8).init(std.heap.page_allocator);
     defer string_buffer.deinit();
 
