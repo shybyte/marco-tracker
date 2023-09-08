@@ -28,6 +28,7 @@ fn buildNative(b: *Builder, target: CrossTarget, optimize: OptimizeMode) !void {
     });
     exe.addAnonymousModule("sokol", .{ .source_file = .{ .path = "src/sokol/sokol.zig" } });
     exe.linkLibrary(libSokol(b, target, optimize, ""));
+    exe.linkSystemLibrary("portmidi");
     b.installArtifact(exe);
     const run = b.addRunArtifact(exe);
     b.step("run", "Run marco-tracker").dependOn(&run.step);

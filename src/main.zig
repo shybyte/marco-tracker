@@ -15,6 +15,7 @@ const ui = @import("./ui/ui.zig");
 const song_splayer = @import("./player.zig");
 const storage = @import("./storage.zig");
 const Song = @import("./song.zig").Song;
+const midi = @import("./midi.zig");
 
 const NumSamples = 32;
 
@@ -34,7 +35,6 @@ var parsed_song: ?std.json.Parsed(Song) = null;
 const C64 = 0;
 
 export fn init() void {
-
     // slog.func("", 1, 2, "tet");
     sg.setup(.{
         .context = sgapp.context(),
@@ -57,6 +57,8 @@ export fn init() void {
         .sample_rate = SAMPLE_RATE,
         .logger = .{ .func = slog.func },
     });
+
+    midi.init();
 
     // create vertex buffer with triangle vertices
     state.bind.vertex_buffers[0] = sg.makeBuffer(.{
@@ -102,6 +104,10 @@ export fn frame() void {
         state.sample_pos += 1;
         state.samples[state.sample_pos] = signal;
         state.sample_pos += 1;
+    }
+
+    for (midi.readMidiEvents()) |midi_event| {
+        ui.onMidiInput(midi_event);
     }
 
     // default pass-action clears to grey
@@ -161,6 +167,7 @@ export fn input(event: ?*const sapp.Event) void {
 }
 
 export fn cleanup() void {
+    midi.shutdown();
     saudio.shutdown();
     sg.shutdown();
 
