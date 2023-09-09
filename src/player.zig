@@ -36,7 +36,7 @@ pub fn getCurrentPatternPlayingPos() usize {
 
 const pos_delta = 0.00018;
 
-pub fn generate() f32 {
+fn generate() f32 {
     if (!is_playing) {
         return synth.generate();
     }
@@ -53,4 +53,13 @@ pub fn generate() f32 {
         current_pos = 0;
     }
     return synth.generate();
+}
+
+pub fn audio_stream_callback(buffer: [*c]f32, num_frames: i32, num_channels: i32) callconv(.C) void {
+    _ = num_channels;
+    for (0..@intCast(num_frames)) |i| {
+        const signal = generate();
+        buffer[2 * i] = signal;
+        buffer[2 * i + 1] = signal;
+    }
 }

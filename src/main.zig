@@ -16,6 +16,8 @@ const song_splayer = @import("./player.zig");
 const storage = @import("./storage.zig");
 const Song = @import("./song.zig").Song;
 const midi = @import("./midi.zig");
+const ENABLE_MIDI = @import("./constants.zig").ENABLE_MIDI;
+const ENABLE_FILES = @import("./constants.zig").ENABLE_FILES;
 
 const NumSamples = 32;
 
@@ -51,15 +53,6 @@ export fn init() void {
     sdtx_desc.fonts[C64] = sdtx.fontC64();
     sdtx.setup(sdtx_desc);
 
-    saudio.setup(.{
-        .buffer_frames = 512,
-        .num_channels = 2,
-        .sample_rate = SAMPLE_RATE,
-        .logger = .{ .func = slog.func },
-    });
-
-    midi.init();
-
     // create vertex buffer with triangle vertices
     state.bind.vertex_buffers[0] = sg.makeBuffer(.{
         .data = sg.asRange(&[_]f32{
@@ -77,37 +70,33 @@ export fn init() void {
     pip_desc.layout.attrs[1].format = .FLOAT4;
     state.pip = sg.makePipeline(pip_desc);
 
-    const song_or_err = storage.loadSong(std.heap.page_allocator);
-    if (song_or_err) |song| {
-        parsed_song = song;
-        song_splayer.setSong(song.value);
-    } else |err| {
-        std.log.debug("Error {}", .{err});
+    if (ENABLE_FILES) {
+        const song_or_err = storage.loadSong(std.heap.page_allocator);
+        if (song_or_err) |song| {
+            parsed_song = song;
+            song_splayer.setSong(song.value);
+        } else |err| {
+            std.log.debug("Error {}", .{err});
+            song_splayer.setSong(SYSTEM);
+        }
+    } else {
         song_splayer.setSong(SYSTEM);
     }
+
+    saudio.setup(.{
+        .buffer_frames = 512,
+        .num_channels = 2,
+        .stream_cb = song_splayer.audio_stream_callback,
+        .sample_rate = SAMPLE_RATE,
+        .logger = .{ .func = slog.func },
+    });
+
+    if (ENABLE_MIDI) midi.init();
 }
 
 export fn frame() void {
-    const num_frames = saudio.expect();
-    var i: i32 = 0;
-    while (i < num_frames) : ({
-        i += 1;
-    }) {
-        if (state.sample_pos == NumSamples) {
-            state.sample_pos = 0;
-            _ = saudio.push(&(state.samples[0]), NumSamples / 2);
-        }
-
-        const signal = song_splayer.generate() * 0.2;
-        // std.log.debug("value {d}", .{signal});
-        state.samples[state.sample_pos] = signal;
-        state.sample_pos += 1;
-        state.samples[state.sample_pos] = signal;
-        state.sample_pos += 1;
-    }
-
-    for (midi.readMidiEvents()) |midi_event| {
-        ui.onMidiInput(midi_event);
+    if (ENABLE_MIDI) {
+        for (midi.readMidiEvents()) |midi_event| ui.onMidiInput(midi_event);
     }
 
     // default pass-action clears to grey
@@ -150,9 +139,11 @@ export fn input(event: ?*const sapp.Event) void {
                 if (ev.modifiers == sapp.modifier_alt) {
                     switch (ev.key_code) {
                         .W => {
-                            storage.saveSong(song_splayer.getSong()) catch |err| {
-                                std.log.debug("Error {}", .{err});
-                            };
+                            if (ENABLE_FILES) {
+                                storage.saveSong(song_splayer.getSong()) catch |err| {
+                                    std.log.debug("Error {}", .{err});
+                                };
+                            }
                         },
                         else => {
                             ui.onInput(event);
@@ -167,7 +158,7 @@ export fn input(event: ?*const sapp.Event) void {
 }
 
 export fn cleanup() void {
-    midi.shutdown();
+    if (ENABLE_MIDI) midi.shutdown();
     saudio.shutdown();
     sg.shutdown();
 

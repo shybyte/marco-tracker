@@ -266,7 +266,7 @@ pub inline fn messageData1(msg: u32) u8 {
 }
 
 pub inline fn messageData2(msg: u32) u8 {
-    return (msg >> 16) & 0xff;
+    return @intCast((msg >> 16) & 0xff);
 }
 
 pub fn read(stream: ?*Stream, buffer: *Event, length: i32) !i32 {

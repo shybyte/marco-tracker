@@ -13,7 +13,7 @@ pub const MidiEvent = struct {
         const status = portmidi.messageStatus(self.message);
         // std.log.debug("Status {}", .{status});
         const command = status & 0xf0;
-        if (command == portmidi.midi.note_on) {
+        if (command == portmidi.midi.note_on and portmidi.messageData2(self.message) > 0) {
             return portmidi.messageData1(self.message);
         } else {
             return null;
@@ -30,7 +30,7 @@ pub fn init() void {
         std.log.debug("Midi Device {d} Name='{s}' Input={} Output={} {}", .{ i, device_info.name, device_info.input, device_info.output, device_info });
     }
 
-    portmidi.openInput(&midi_in_stream, 1, null, 512, null, null) catch |err| {
+    portmidi.openInput(&midi_in_stream, 3, null, 512, null, null) catch |err| {
         std.log.err("Ppen MidiStream error {}", .{err});
     };
 }
