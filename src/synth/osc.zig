@@ -6,14 +6,27 @@ const OscType = enum { sin, saw, square, triangle };
 pub const Osc = struct {
     oscType: OscType = OscType.saw,
     time: f32 = 0,
+    keep_time_counter: f32 = 0,
+    keep_time: f32 = 2000,
+    skip_time: f32 = 0,
 
     const Self = @This();
 
     pub fn generate(self: *@This(), freq: f32) f32 {
         self.time += freq / SAMPLE_RATE;
-        if (self.time > 1) {
-            self.time = self.time - 1;
+
+        if (self.skip_time > 0) {
+            self.keep_time_counter += 1;
+            if (self.keep_time_counter > self.keep_time) {
+                self.keep_time_counter = 0;
+                self.time += self.skip_time * freq / SAMPLE_RATE;
+            }
         }
+
+        if (self.time > 1) {
+            self.time = @mod(self.time, 1);
+        }
+
         return switch (self.oscType) {
             .sin => generateSin(self.time),
             .saw => generateSaw(self.time),

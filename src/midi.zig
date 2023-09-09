@@ -30,7 +30,7 @@ pub fn init() void {
         std.log.debug("Midi Device {d} Name='{s}' Input={} Output={} {}", .{ i, device_info.name, device_info.input, device_info.output, device_info });
     }
 
-    portmidi.openInput(&midi_in_stream, 3, null, 512, null, null) catch |err| {
+    portmidi.openInput(&midi_in_stream, 1, null, 512, null, null) catch |err| {
         std.log.err("Ppen MidiStream error {}", .{err});
     };
 }
