@@ -100,5 +100,10 @@
         }
       ]
     }
+  ],
+  "instruments": [
+    {
+      "osc_type": "saw"
+    }
   ]
 }

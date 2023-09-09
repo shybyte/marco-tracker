@@ -76,7 +76,7 @@ export fn init() void {
             parsed_song = song;
             song_splayer.setSong(song.value);
         } else |err| {
-            std.log.debug("Error {}", .{err});
+            std.log.debug("Error while loading song file: {}", .{err});
             song_splayer.setSong(SYSTEM);
         }
     } else {

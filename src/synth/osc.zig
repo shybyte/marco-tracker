@@ -1,10 +1,10 @@
 const std = @import("std");
 const SAMPLE_RATE = @import("../constants.zig").SAMPLE_RATE;
 
-const OscType = enum { sin, saw, square, triangle };
+pub const OscType = enum { sin, saw, square, triangle };
 
 pub const Osc = struct {
-    oscType: OscType = OscType.saw,
+    osc_type: OscType = OscType.saw,
     time: f32 = 0,
     keep_time_counter: f32 = 0,
     keep_time: f32 = 2000,
@@ -27,7 +27,7 @@ pub const Osc = struct {
             self.time = @mod(self.time, 1);
         }
 
-        return switch (self.oscType) {
+        return switch (self.osc_type) {
             .sin => generateSin(self.time),
             .saw => generateSaw(self.time),
             .square => generateSquare(self.time),

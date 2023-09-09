@@ -1,15 +1,18 @@
-const song = @import("./song.zig");
+const song_module = @import("./song.zig");
 const synth = @import("./synth/synth.zig");
 
-var current_song = song.EMPTY_SONG;
+var current_song = song_module.EMPTY_SONG;
 var is_playing = true;
 var current_pos: f32 = 0;
 
-pub fn setSong(song_arg: song.Song) void {
+pub fn setSong(song_arg: song_module.Song) void {
     current_song = song_arg;
+    for (song_arg.instruments) |instrument| {
+        synth.setInstrument(&instrument);
+    }
 }
 
-pub fn getSong() *song.Song {
+pub fn getSong() *song_module.Song {
     return &current_song;
 }
 
@@ -26,7 +29,7 @@ pub fn togglePlaying() void {
     is_playing = !is_playing;
 }
 
-pub fn getCurrentPattern() *song.Pattern {
+pub fn getCurrentPattern() *song_module.Pattern {
     return &current_song.patterns[0];
 }
 

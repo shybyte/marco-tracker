@@ -47,6 +47,10 @@ pub const SYSTEM_PATTERN: song.Pattern = song.Pattern{
 
 var PATTERNS = [_]song.Pattern{SYSTEM_PATTERN};
 
-pub const SYSTEM: song.Song = .{
-    .patterns = &PATTERNS,
+const SIMPLE_INST: song.Instrument = .{
+    .osc_type = .saw,
 };
+
+var INSTRUMENTS = [_]song.Instrument{SIMPLE_INST};
+
+pub const SYSTEM: song.Song = .{ .patterns = &PATTERNS, .instruments = &INSTRUMENTS };
