@@ -1,6 +1,7 @@
 const std = @import("std");
 const portmidi = @import("./portmidi/portmidi.zig");
 const Note = @import("./notes.zig").Note;
+const MIDI_INPUT_DEVICE_NUMBER = @import("./constants.zig").MIDI_INPUT_DEVICE_NUMBER;
 
 var midi_in_stream: ?*portmidi.Stream = undefined;
 
@@ -30,7 +31,8 @@ pub fn init() void {
         std.log.debug("Midi Device {d} Name='{s}' Input={} Output={} {}", .{ i, device_info.name, device_info.input, device_info.output, device_info });
     }
 
-    portmidi.openInput(&midi_in_stream, 3, null, 512, null, null) catch |err| {
+    const midi_input_devive_number: u8 = if (device_count >= MIDI_INPUT_DEVICE_NUMBER) MIDI_INPUT_DEVICE_NUMBER else 1;
+    portmidi.openInput(&midi_in_stream, midi_input_devive_number, null, 512, null, null) catch |err| {
         std.log.err("Ppen MidiStream error {}", .{err});
     };
 }
