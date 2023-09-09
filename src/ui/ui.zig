@@ -27,7 +27,7 @@ pub fn draw() void {
 
 pub fn onInput(event: ?*const sapp.Event) void {
     const ev = event.?;
-    std.log.info("modifiers: {}", .{ev.modifiers});
+    // std.log.info("modifiers: {}", .{ev.modifiers});
     var current_pattern = song_player.getCurrentPattern();
 
     if (ev.type == .KEY_DOWN) {

@@ -114,6 +114,9 @@ export fn frame() void {
 
 export fn input(event: ?*const sapp.Event) void {
     const ev = event.?;
+    if (ev.type == .MOUSE_SCROLL) {
+        std.log.info("MouseScroll: {d}", .{ev.scroll_y});
+    }
     if (ev.type == .KEY_DOWN) {
         if (ev.key_code == sapp.Keycode.ESCAPE) {
             sapp.quit();
