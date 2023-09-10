@@ -31,8 +31,6 @@ pub fn drawPattern(pattern: *song.Pattern, playing_row: usize, pattern_edit_row_
             sdtx.print("--\n", .{});
         }
     }
-
-    sdtx.draw();
 }
 
 const NOTE_NAMES: [12]u8 = .{ 'C', 'c', 'D', 'd', 'E', 'F', 'f', 'G', 'g', 'A', 'B', 'H' };

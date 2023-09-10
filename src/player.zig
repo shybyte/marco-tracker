@@ -61,7 +61,7 @@ fn generate() f32 {
 pub fn audio_stream_callback(buffer: [*c]f32, num_frames: i32, num_channels: i32) callconv(.C) void {
     _ = num_channels;
     for (0..@intCast(num_frames)) |i| {
-        const signal = generate();
+        const signal = generate() * 0.2;
         buffer[2 * i] = signal;
         buffer[2 * i + 1] = signal;
     }

@@ -1,7 +1,7 @@
 const std = @import("std");
 const SAMPLE_RATE = @import("../constants.zig").SAMPLE_RATE;
 
-pub const OscType = enum { sin, saw, square, triangle };
+pub const OscType = enum(u8) { sin, saw, square, triangle };
 
 pub const Osc = struct {
     osc_type: OscType = OscType.saw,

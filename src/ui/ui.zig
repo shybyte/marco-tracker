@@ -3,14 +3,17 @@ const sokol = @import("sokol");
 const sg = sokol.gfx;
 const saudio = sokol.audio;
 const sapp = sokol.app;
+const sdtx = sokol.debugtext;
 
 const keymap = @import("../keymap.zig");
 const synth = @import("../synth/synth.zig");
 const song_player = @import("../player.zig");
 const Note = @import("../notes.zig").Note;
 const draw_pattern = @import("./pattern.zig").drawPattern;
+const inst_editor = @import("./inst-editor.zig");
 const storage = @import("../storage.zig");
 const midi = @import("../midi.zig");
+const ui_utils = @import("./utils.zig");
 
 var pattern_edit_row_index: usize = 0;
 var row_step: usize = 0;
@@ -21,12 +24,27 @@ const ChainCommand = enum { set_step, set_octave };
 
 var chain_command: ?ChainCommand = null;
 
+var ui_context: ui_utils.Context = .{};
+
 pub fn draw() void {
     draw_pattern(song_player.getCurrentPattern(), song_player.getCurrentPatternPlayingPos(), pattern_edit_row_index);
+
+    const inst = song_player.getSong().instruments[0];
+    inst_editor.draw(ui_context, inst);
+
+    sdtx.draw();
 }
 
 pub fn onInput(event: ?*const sapp.Event) void {
     const ev = event.?;
+
+    if (ev.type == .MOUSE_MOVE) {
+        ui_context.mouse_pos.x = ev.mouse_x;
+        ui_context.mouse_pos.y = ev.mouse_y;
+    }
+
+    inst_editor.onInput(ui_context, event);
+
     // std.log.info("modifiers: {}", .{ev.modifiers});
     var current_pattern = song_player.getCurrentPattern();
 
