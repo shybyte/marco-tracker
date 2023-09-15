@@ -29,7 +29,7 @@ var ui_context: ui_utils.Context = .{};
 pub fn draw() void {
     draw_pattern(song_player.getCurrentPattern(), song_player.getCurrentPatternPlayingPos(), pattern_edit_row_index);
 
-    const inst = song_player.getSong().instruments[0];
+    const inst = &song_player.getSong().instruments[0];
     inst_editor.draw(ui_context, inst);
 
     sdtx.draw();

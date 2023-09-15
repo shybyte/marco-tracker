@@ -19,6 +19,7 @@ pub fn playNote(note: Note) void {
 
 pub fn setInstrument(inst: *const Instrument) void {
     osc.osc_type = inst.osc_type;
+    adsr.release_time = inst.adsr_release;
 }
 
 pub fn generate() f32 {

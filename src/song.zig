@@ -25,4 +25,5 @@ pub const EMPTY_SONG: Song = .{
 
 pub const Instrument = struct {
     osc_type: OscType = OscType.saw,
+    adsr_release: f32 = 0.5,
 };

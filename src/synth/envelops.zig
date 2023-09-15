@@ -3,8 +3,8 @@ const SAMPLE_RATE = @import("../constants.zig").SAMPLE_RATE_F32;
 pub const Adsr = struct {
     time: f32 = 0,
     attack_time: f32 = 0.01,
-    decay_time: f32 = 0.5,
-    sustain_level: f32 = 0.5,
+    decay_time: f32 = 0,
+    sustain_level: f32 = 1,
     release_time: f32 = 0.5,
 
     const Self = @This();
