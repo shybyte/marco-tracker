@@ -33,17 +33,18 @@ pub fn draw() void {
     inst_editor.draw(ui_context, inst);
 
     sdtx.draw();
+    ui_context.current_event = null;
 }
 
 pub fn onInput(event: ?*const sapp.Event) void {
     const ev = event.?;
 
+    ui_context.current_event = ev.*;
+
     if (ev.type == .MOUSE_MOVE) {
         ui_context.mouse_pos.x = ev.mouse_x;
         ui_context.mouse_pos.y = ev.mouse_y;
     }
-
-    inst_editor.onInput(ui_context, event);
 
     // std.log.info("modifiers: {}", .{ev.modifiers});
     var current_pattern = song_player.getCurrentPattern();
