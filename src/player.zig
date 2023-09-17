@@ -3,7 +3,7 @@ const synth = @import("./synth/synth.zig");
 
 var current_song = song_module.EMPTY_SONG;
 var is_playing = true;
-var current_pos: f32 = 0;
+var current_pos_in_pattern: f32 = 0;
 
 pub fn setSong(song_arg: song_module.Song) void {
     current_song = song_arg;
@@ -18,7 +18,7 @@ pub fn getSong() *song_module.Song {
 
 pub fn start() void {
     is_playing = true;
-    current_pos = 0;
+    current_pos_in_pattern = 0;
 }
 
 pub fn stop() void {
@@ -34,7 +34,7 @@ pub fn getCurrentPattern() *song_module.Pattern {
 }
 
 pub fn getCurrentPatternPlayingPos() usize {
-    return @intFromFloat(current_pos);
+    return @intFromFloat(current_pos_in_pattern);
 }
 
 const pos_delta = 0.00018;
@@ -45,15 +45,15 @@ fn generate() f32 {
     }
 
     const rows = getCurrentPattern().rows;
-    const current_row_index = @floor(current_pos);
-    if (@floor(current_pos - pos_delta) != current_row_index) {
+    const current_row_index = @floor(current_pos_in_pattern);
+    if (@floor(current_pos_in_pattern - pos_delta) != current_row_index) {
         if (rows[@intFromFloat(current_row_index)].note) |note| {
             synth.playNote(note);
         }
     }
-    current_pos += pos_delta;
-    if (current_pos >= rows.len) {
-        current_pos = 0;
+    current_pos_in_pattern += pos_delta;
+    if (current_pos_in_pattern >= rows.len) {
+        current_pos_in_pattern = 0;
     }
     return synth.generate();
 }

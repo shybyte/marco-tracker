@@ -53,4 +53,6 @@ const SIMPLE_INST: song.Instrument = .{
 
 var INSTRUMENTS = [_]song.Instrument{SIMPLE_INST};
 
-pub const SYSTEM: song.Song = .{ .patterns = &PATTERNS, .instruments = &INSTRUMENTS };
+var SONG_ROWS = [_]song.SongRow{.{ .cols = [4]song.PatternID{ 0, null, null, null } }};
+
+pub const SYSTEM: song.Song = .{ .patterns = &PATTERNS, .instruments = &INSTRUMENTS, .rows = &SONG_ROWS };

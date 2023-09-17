@@ -4,13 +4,15 @@ const sapp = sokol.app;
 const sdtx = sokol.debugtext;
 const notes = @import("../notes.zig");
 const song = @import("../song.zig");
+const utils = @import("utils.zig");
+const Point2D = utils.Point2D;
 
 const FONT_SCALE_FACTOR = 2;
 
-pub fn drawPattern(pattern: *song.Pattern, playing_row: usize, pattern_edit_row_index: usize) void {
+pub fn drawPattern(pattern: *song.Pattern, playing_row: usize, pattern_edit_row_index: usize, screen_pos: Point2D) void {
     // std.log.debug("Width/Height: {d} {d}", .{ sapp.widthf(), sapp.heightf() });
     sdtx.canvas(sapp.widthf() / FONT_SCALE_FACTOR, sapp.heightf() / FONT_SCALE_FACTOR);
-    sdtx.origin(0, 0);
+    sdtx.origin(screen_pos.x, screen_pos.y);
 
     sdtx.home();
 

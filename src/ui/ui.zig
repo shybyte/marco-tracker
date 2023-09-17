@@ -14,6 +14,9 @@ const inst_editor = @import("./inst-editor.zig");
 const storage = @import("../storage.zig");
 const midi = @import("../midi.zig");
 const ui_utils = @import("./utils.zig");
+const song_module = @import("../song.zig");
+const Pattern = song_module.Pattern;
+const FONT_SCALE_FACTOR = @import("../constants.zig").FONT_SCALE_FACTOR;
 
 var pattern_edit_row_index: usize = 0;
 var row_step: usize = 0;
@@ -27,13 +30,38 @@ var chain_command: ?ChainCommand = null;
 var ui_context: ui_utils.Context = .{};
 
 pub fn draw() void {
-    draw_pattern(song_player.getCurrentPattern(), song_player.getCurrentPatternPlayingPos(), pattern_edit_row_index);
+    drawSongRows();
+    draw_pattern(song_player.getCurrentPattern(), song_player.getCurrentPatternPlayingPos(), pattern_edit_row_index, .{ .x = 20 });
 
     const inst = &song_player.getSong().instruments[0];
-    inst_editor.draw(ui_context, inst);
+    inst_editor.draw(ui_context, inst, .{ .x = 30 });
 
     sdtx.draw();
     ui_context.current_event = null;
+}
+
+pub fn drawSongRows() void {
+    // std.log.debug("Width/Height: {d} {d}", .{ sapp.widthf(), sapp.heightf() });
+    sdtx.canvas(sapp.widthf() / FONT_SCALE_FACTOR, sapp.heightf() / FONT_SCALE_FACTOR);
+    sdtx.origin(0, 0);
+
+    sdtx.home();
+
+    const song = song_player.getSong();
+
+    for (song.rows, 0..) |row, row_i| {
+        _ = row_i;
+        for (row.cols, 0..) |col, col_i| {
+            _ = col_i;
+            sdtx.color3f(0.5, 0.5, 0.6);
+            if (col) |pattern_id| {
+                sdtx.print("{d:0>2} ", .{pattern_id});
+            } else {
+                sdtx.print("-- ", .{});
+            }
+        }
+        sdtx.crlf();
+    }
 }
 
 pub fn onInput(event: ?*const sapp.Event) void {

@@ -10,15 +10,25 @@ pub const PatternRow = struct {
 };
 
 pub const Song = struct {
+    rows: []SongRow,
     patterns: []Pattern,
     instruments: []Instrument,
+};
+
+pub const PatternID = ?usize;
+
+pub const SongRow = struct {
+    cols: [4]PatternID,
 };
 
 pub const PATTERNS: [0]Pattern = [_]Pattern{};
 
 pub const INSTRUMNETS: [0]Instrument = [_]Instrument{};
 
+var SONG_ROWS = [_]SongRow{.{ .cols = [4]PatternID{ 0, null, null, null } }};
+
 pub const EMPTY_SONG: Song = .{
+    .rows = &SONG_ROWS,
     .patterns = &PATTERNS,
     .instruments = &INSTRUMNETS,
 };

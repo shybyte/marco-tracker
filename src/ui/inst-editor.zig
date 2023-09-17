@@ -11,9 +11,9 @@ const synth = @import("../synth/synth.zig");
 
 const FONT_SCALE_FACTOR = 2;
 
-pub fn draw(ui_context: UiContext, inst: *Instrument) void {
+pub fn draw(ui_context: UiContext, inst: *Instrument, screen_pos: Point2D) void {
     sdtx.canvas(sapp.widthf() / FONT_SCALE_FACTOR, sapp.heightf() / FONT_SCALE_FACTOR);
-    var text_pos: Point2D = .{ .x = 20, .y = 0 };
+    var text_pos: Point2D = screen_pos;
     sdtx.origin(text_pos.x, text_pos.y);
     sdtx.home();
 
@@ -45,7 +45,7 @@ pub fn draw(ui_context: UiContext, inst: *Instrument) void {
     sdtx.sdtx_crlf();
     text_pos.y += 1;
 
-    inst.adsr_release = number_input(inst.adsr_release, "Attack", text_pos, ui_context);
+    inst.adsr_release = number_input(inst.adsr_release, "Release", text_pos, ui_context);
 
     synth.setInstrument(inst);
 }

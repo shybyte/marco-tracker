@@ -1,4 +1,14 @@
 {
+  "rows": [
+    {
+      "cols": [
+        0,
+        null,
+        null,
+        null
+      ]
+    }
+  ],
   "patterns": [
     {
       "rows": [
@@ -103,7 +113,9 @@
   ],
   "instruments": [
     {
-      "osc_type": "saw"
+      "osc_type": "saw",
+      "adsr_attack": 9.999999776482582e-03,
+      "adsr_release": 5.0e-01
     }
   ]
 }
