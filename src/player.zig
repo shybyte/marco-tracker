@@ -29,10 +29,6 @@ pub fn togglePlaying() void {
     is_playing = !is_playing;
 }
 
-pub fn getCurrentPattern() *song_module.Pattern {
-    return &current_song.patterns[0];
-}
-
 pub fn getCurrentPatternPlayingPos() usize {
     return @intFromFloat(current_pos_in_pattern);
 }
@@ -44,17 +40,23 @@ fn generate() f32 {
         return synth.generate();
     }
 
-    const rows = getCurrentPattern().rows;
     const current_row_index = @floor(current_pos_in_pattern);
     if (@floor(current_pos_in_pattern - pos_delta) != current_row_index) {
-        if (rows[@intFromFloat(current_row_index)].note) |note| {
-            synth.playNote(note);
+        for (current_song.rows[0].cols, 0..) |pattern_id_opt, channel_index| {
+            if (pattern_id_opt) |pattern_id| {
+                const pattern = current_song.channels[channel_index].patterns[pattern_id];
+                if (pattern.rows[@intFromFloat(current_row_index)].note) |note| {
+                    synth.playNote(note, channel_index);
+                }
+            }
         }
     }
+
     current_pos_in_pattern += pos_delta;
-    if (current_pos_in_pattern >= rows.len) {
+    if (current_pos_in_pattern >= song_module.PATTEN_LENGTH) {
         current_pos_in_pattern = 0;
     }
+
     return synth.generate();
 }
 

@@ -18,6 +18,7 @@ pub const A3 = A4 - 12;
 pub const C4 = A3 + 3;
 pub const Cis4 = C4 + 1;
 pub const D4 = C4 + 2;
+pub const E4 = C4 + 4;
 pub const F4 = C4 + 5;
 
 pub const A4 = 69;

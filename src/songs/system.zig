@@ -45,7 +45,60 @@ pub const SYSTEM_PATTERN: song.Pattern = song.Pattern{
     },
 };
 
-var PATTERNS = [_]song.Pattern{SYSTEM_PATTERN};
+pub const SYSTEM_PATTERN_STRINGS: song.Pattern = song.Pattern{
+    .rows = [_]song.PatternRow{
+        .{ .note = n.A4 },
+        .{},
+        .{},
+        .{},
+
+        .{},
+        .{},
+
+        .{ .note = n.D4 },
+        .{ .note = n.E4 },
+
+        .{ .note = n.F4 },
+        .{},
+        .{},
+        .{},
+
+        .{ .note = n.E4 },
+        .{},
+        .{ .note = n.F4 },
+        .{},
+
+        .{ .note = n.D4 },
+        .{},
+        .{},
+        .{},
+
+        .{},
+        .{},
+        .{},
+        .{},
+
+        .{},
+        .{},
+        .{},
+        .{},
+
+        .{},
+        .{},
+        .{},
+        .{},
+    },
+};
+
+var PATTERNS_0 = [_]song.Pattern{SYSTEM_PATTERN};
+var PATTERNS_1 = [_]song.Pattern{SYSTEM_PATTERN_STRINGS};
+var EMPTY_PATTERN = [_]song.Pattern{SYSTEM_PATTERN};
+var CHANNELS = [_]song.Channel{
+    .{ .patterns = &PATTERNS_0 },
+    .{ .patterns = &PATTERNS_1 },
+    .{ .patterns = &EMPTY_PATTERN },
+    .{ .patterns = &EMPTY_PATTERN },
+};
 
 const SIMPLE_INST: song.Instrument = .{
     .osc_type = .saw,
@@ -53,6 +106,6 @@ const SIMPLE_INST: song.Instrument = .{
 
 var INSTRUMENTS = [_]song.Instrument{SIMPLE_INST};
 
-var SONG_ROWS = [_]song.SongRow{.{ .cols = [4]song.PatternID{ 0, null, null, null } }};
+var SONG_ROWS = [_]song.SongRow{.{ .cols = [4]song.PatternID{ 0, 0, null, null } }};
 
-pub const SYSTEM: song.Song = .{ .patterns = &PATTERNS, .instruments = &INSTRUMENTS, .rows = &SONG_ROWS };
+pub const SYSTEM: song.Song = .{ .channels = &CHANNELS, .instruments = &INSTRUMENTS, .rows = &SONG_ROWS };

@@ -6,23 +6,35 @@ const Adsr = @import("./envelops.zig").Adsr;
 const Osc = @import("./osc.zig").Osc;
 const Instrument = @import("../song.zig").Instrument;
 
-var current_note: Note = notes.A4;
+pub const Voice = struct {
+    current_note: Note = notes.A4,
+    adsr: Adsr = Adsr{},
+    osc: Osc = Osc{},
+};
 
-var adsr: Adsr = Adsr{};
-var osc: Osc = Osc{};
+var voice_1 = Voice{};
+var voice_2 = Voice{};
 
-pub fn playNote(note: Note) void {
-    current_note = note;
+pub var voices: [2]*Voice = [2]*Voice{ &voice_1, &voice_2 };
+
+pub fn playNote(note: Note, channel: usize) void {
+    var voice = voices[channel];
+    voice.current_note = note;
+    voice.adsr.trigger();
     // std.log.info("playNote {}", .{note});
-    adsr.trigger();
 }
 
 pub fn setInstrument(inst: *const Instrument) void {
-    osc.osc_type = inst.osc_type;
-    adsr.attack_time = inst.adsr_attack;
-    adsr.release_time = inst.adsr_release;
+    var voice = voices[0];
+    voice.osc.osc_type = inst.osc_type;
+    voice.adsr.attack_time = inst.adsr_attack;
+    voice.adsr.release_time = inst.adsr_release;
 }
 
 pub fn generate() f32 {
-    return osc.generate(notes.midiNoteFrequency(current_note)) * adsr.generate();
+    var signal: f32 = 0;
+    for (voices) |voice| {
+        signal += voice.osc.generate(notes.midiNoteFrequency(voice.current_note)) * voice.adsr.generate();
+    }
+    return signal;
 }
