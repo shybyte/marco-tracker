@@ -90,21 +90,27 @@ pub const SYSTEM_PATTERN_STRINGS: song.Pattern = song.Pattern{
     },
 };
 
+pub const EMPTY_PATTERN: song.Pattern = song.Pattern{ .rows = [_]song.PatternRow{.{ .note = null }} ** 32 };
+
 var PATTERNS_0 = [_]song.Pattern{SYSTEM_PATTERN};
 var PATTERNS_1 = [_]song.Pattern{SYSTEM_PATTERN_STRINGS};
-var EMPTY_PATTERN = [_]song.Pattern{SYSTEM_PATTERN};
+var EMPTY_PATTERNS = [_]song.Pattern{EMPTY_PATTERN};
 var CHANNELS = [_]song.Channel{
     .{ .patterns = &PATTERNS_0 },
     .{ .patterns = &PATTERNS_1 },
-    .{ .patterns = &EMPTY_PATTERN },
-    .{ .patterns = &EMPTY_PATTERN },
+    .{ .patterns = &EMPTY_PATTERNS },
+    .{ .patterns = &EMPTY_PATTERNS },
 };
 
 const SIMPLE_INST: song.Instrument = .{
     .osc_type = .saw,
 };
 
-var INSTRUMENTS = [_]song.Instrument{SIMPLE_INST};
+const SIMPLE_INST_SINE: song.Instrument = .{
+    .osc_type = .sin,
+};
+
+var INSTRUMENTS = [_]song.Instrument{ SIMPLE_INST, SIMPLE_INST_SINE };
 
 var SONG_ROWS = [_]song.SongRow{.{ .cols = [4]song.PatternID{ 0, 0, null, null } }};
 

@@ -24,8 +24,8 @@ pub fn playNote(note: Note, channel: usize) void {
     // std.log.info("playNote {}", .{note});
 }
 
-pub fn setInstrument(inst: *const Instrument) void {
-    var voice = voices[0];
+pub fn setInstrument(inst: *const Instrument, voice_index: usize) void {
+    var voice = voices[voice_index];
     voice.osc.osc_type = inst.osc_type;
     voice.adsr.attack_time = inst.adsr_attack;
     voice.adsr.release_time = inst.adsr_release;

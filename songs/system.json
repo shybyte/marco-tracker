@@ -3,110 +3,426 @@
     {
       "cols": [
         0,
-        null,
+        0,
         null,
         null
       ]
     }
   ],
-  "patterns": [
+  "channels": [
     {
-      "rows": [
+      "patterns": [
         {
-          "note": 45
-        },
+          "rows": [
+            {
+              "note": 45
+            },
+            {
+              "note": null
+            },
+            {
+              "note": 57
+            },
+            {
+              "note": 60
+            },
+            {
+              "note": 45
+            },
+            {
+              "note": null
+            },
+            {
+              "note": 57
+            },
+            {
+              "note": 60
+            },
+            {
+              "note": 41
+            },
+            {
+              "note": null
+            },
+            {
+              "note": 53
+            },
+            {
+              "note": 60
+            },
+            {
+              "note": 41
+            },
+            {
+              "note": 53
+            },
+            {
+              "note": 60
+            },
+            {
+              "note": null
+            },
+            {
+              "note": 50
+            },
+            {
+              "note": null
+            },
+            {
+              "note": 62
+            },
+            {
+              "note": 74
+            },
+            {
+              "note": 50
+            },
+            {
+              "note": 62
+            },
+            {
+              "note": 65
+            },
+            {
+              "note": null
+            },
+            {
+              "note": 50
+            },
+            {
+              "note": null
+            },
+            {
+              "note": 61
+            },
+            {
+              "note": 62
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": 65
+            },
+            {
+              "note": 69
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "patterns": [
         {
-          "note": null
-        },
+          "rows": [
+            {
+              "note": 69
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": 62
+            },
+            {
+              "note": 64
+            },
+            {
+              "note": 65
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": 64
+            },
+            {
+              "note": null
+            },
+            {
+              "note": 65
+            },
+            {
+              "note": null
+            },
+            {
+              "note": 62
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "patterns": [
         {
-          "note": 57
-        },
+          "rows": [
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "patterns": [
         {
-          "note": 60
-        },
-        {
-          "note": 45
-        },
-        {
-          "note": null
-        },
-        {
-          "note": 44
-        },
-        {
-          "note": 60
-        },
-        {
-          "note": 41
-        },
-        {
-          "note": null
-        },
-        {
-          "note": 53
-        },
-        {
-          "note": 60
-        },
-        {
-          "note": 41
-        },
-        {
-          "note": 53
-        },
-        {
-          "note": 60
-        },
-        {
-          "note": null
-        },
-        {
-          "note": 50
-        },
-        {
-          "note": null
-        },
-        {
-          "note": 62
-        },
-        {
-          "note": 74
-        },
-        {
-          "note": 50
-        },
-        {
-          "note": 62
-        },
-        {
-          "note": 65
-        },
-        {
-          "note": null
-        },
-        {
-          "note": 50
-        },
-        {
-          "note": null
-        },
-        {
-          "note": 61
-        },
-        {
-          "note": 62
-        },
-        {
-          "note": null
-        },
-        {
-          "note": null
-        },
-        {
-          "note": 65
-        },
-        {
-          "note": 69
+          "rows": [
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            },
+            {
+              "note": null
+            }
+          ]
         }
       ]
     }
@@ -114,6 +430,11 @@
   "instruments": [
     {
       "osc_type": "saw",
+      "adsr_attack": 9.999999776482582e-03,
+      "adsr_release": 5.0e-01
+    },
+    {
+      "osc_type": "sin",
       "adsr_attack": 9.999999776482582e-03,
       "adsr_release": 5.0e-01
     }

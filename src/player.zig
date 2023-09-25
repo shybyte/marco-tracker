@@ -7,8 +7,8 @@ var current_pos_in_pattern: f32 = 0;
 
 pub fn setSong(song_arg: song_module.Song) void {
     current_song = song_arg;
-    for (song_arg.instruments) |instrument| {
-        synth.setInstrument(&instrument);
+    for (song_arg.instruments, 0..) |instrument, i| {
+        synth.setInstrument(&instrument, i);
     }
 }
 

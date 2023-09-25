@@ -18,6 +18,7 @@ const song_module = @import("../song.zig");
 const Pattern = song_module.Pattern;
 const FONT_SCALE_FACTOR = @import("../constants.zig").FONT_SCALE_FACTOR;
 
+var channel_index: usize = 0;
 var pattern_edit_row_index: usize = 0;
 var row_step: usize = 0;
 var octave: u8 = 4;
@@ -34,13 +35,19 @@ pub fn draw() void {
 
     const song = song_player.getSong();
     for (song.rows[0].cols, 0..) |pattern_id_opt, i| {
-        if (pattern_id_opt) |pattern_id| {
-            draw_pattern(&song.channels[i].patterns[pattern_id], song_player.getCurrentPatternPlayingPos(), pattern_edit_row_index, .{ .x = 20 + @as(f32, @floatFromInt(i)) * 3 });
-        }
+        const pattern_id = pattern_id_opt orelse 0;
+        draw_pattern(
+            &song.channels[i].patterns[pattern_id],
+            song_player.getCurrentPatternPlayingPos(),
+            pattern_edit_row_index,
+            channel_index == i,
+            .{ .x = 16 + @as(f32, @floatFromInt(i)) * 3 },
+        );
     }
 
-    const inst = &song_player.getSong().instruments[0];
+    const inst = &song_player.getSong().instruments[channel_index];
     inst_editor.draw(ui_context, inst, .{ .x = 30 });
+    synth.setInstrument(inst, channel_index);
 
     sdtx.draw();
     ui_context.current_event = null;
@@ -58,9 +65,11 @@ pub fn drawSongRows() void {
     for (song.rows, 0..) |row, row_i| {
         _ = row_i;
         for (row.cols, 0..) |col, col_i| {
-            _ = col_i;
             sdtx.color3f(0.5, 0.5, 0.6);
             if (col) |pattern_id| {
+                if (col_i == channel_index) {
+                    sdtx.color3f(0.8, 0.8, 0.9);
+                }
                 sdtx.print("{d:0>2} ", .{pattern_id});
             } else {
                 sdtx.print("-- ", .{});
@@ -129,6 +138,12 @@ pub fn onInput(event: ?*const sapp.Event) void {
             .DOWN => {
                 pattern_edit_row_index = (pattern_edit_row_index + 1) % current_pattern.rows.len;
             },
+            .LEFT => {
+                channel_index = (channel_index + song_module.CHANNEL_NUM - 1) % song_module.CHANNEL_NUM;
+            },
+            .RIGHT => {
+                channel_index = (channel_index + 1) % song_module.CHANNEL_NUM;
+            },
             .DELETE => {
                 current_pattern.rows[pattern_edit_row_index].note = null;
                 pattern_edit_row_index = (pattern_edit_row_index + row_step) % current_pattern.rows.len;
@@ -154,9 +169,9 @@ pub fn onMidiInput(event: midi.MidiEvent) void {
 
 pub fn onNoteInput(note: Note) void {
     if (edit_mode) {
-        var current_pattern = &song_player.getSong().channels[0].patterns[0];
+        var current_pattern = &song_player.getSong().channels[channel_index].patterns[0];
         current_pattern.rows[pattern_edit_row_index].note = note;
         pattern_edit_row_index = (pattern_edit_row_index + row_step) % current_pattern.rows.len;
     }
-    synth.playNote(note, 0);
+    synth.playNote(note, channel_index);
 }

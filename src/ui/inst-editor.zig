@@ -46,8 +46,6 @@ pub fn draw(ui_context: UiContext, inst: *Instrument, screen_pos: Point2D) void 
     text_pos.y += 1;
 
     inst.adsr_release = number_input(inst.adsr_release, "Release", text_pos, ui_context);
-
-    synth.setInstrument(inst);
 }
 
 fn number_input(value: f32, label: []const u8, current_char_pos: Point2D, ui_context: UiContext) f32 {
