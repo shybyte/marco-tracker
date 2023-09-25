@@ -34,10 +34,10 @@ pub fn draw() void {
     drawSongRows();
 
     const song = song_player.getSong();
-    for (song.rows[0].cols, 0..) |pattern_id_opt, i| {
+    for (song.rows.items[0].cols, 0..) |pattern_id_opt, i| {
         const pattern_id = pattern_id_opt orelse 0;
         draw_pattern(
-            &song.channels[i].patterns[pattern_id],
+            &song.channels.items[i].patterns.items[pattern_id],
             song_player.getCurrentPatternPlayingPos(),
             pattern_edit_row_index,
             channel_index == i,
@@ -45,7 +45,7 @@ pub fn draw() void {
         );
     }
 
-    const inst = &song_player.getSong().instruments[channel_index];
+    const inst = &song_player.getSong().instruments.items[channel_index];
     inst_editor.draw(ui_context, inst, .{ .x = 30 });
     synth.setInstrument(inst, channel_index);
 
@@ -62,7 +62,7 @@ pub fn drawSongRows() void {
 
     const song = song_player.getSong();
 
-    for (song.rows, 0..) |row, row_i| {
+    for (song.rows.items, 0..) |row, row_i| {
         _ = row_i;
         for (row.cols, 0..) |col, col_i| {
             sdtx.color3f(0.5, 0.5, 0.6);
@@ -90,7 +90,7 @@ pub fn onInput(event: ?*const sapp.Event) void {
     }
 
     // std.log.info("modifiers: {}", .{ev.modifiers});
-    var current_pattern = song_player.getSong().channels[0].patterns[0];
+    var current_pattern = song_player.getSong().channels.items[0].patterns.items[0];
 
     if (ev.type == .KEY_DOWN) {
         if (chain_command) |command| {
@@ -169,7 +169,7 @@ pub fn onMidiInput(event: midi.MidiEvent) void {
 
 pub fn onNoteInput(note: Note) void {
     if (edit_mode) {
-        var current_pattern = &song_player.getSong().channels[channel_index].patterns[0];
+        var current_pattern = &song_player.getSong().channels.items[channel_index].patterns.items[0];
         current_pattern.rows[pattern_edit_row_index].note = note;
         pattern_edit_row_index = (pattern_edit_row_index + row_step) % current_pattern.rows.len;
     }

@@ -1,13 +1,13 @@
 const song_module = @import("./song.zig");
 const synth = @import("./synth/synth.zig");
 
-var current_song = song_module.EMPTY_SONG;
+var current_song: song_module.Song = undefined;
 var is_playing = true;
 var current_pos_in_pattern: f32 = 0;
 
 pub fn setSong(song_arg: song_module.Song) void {
     current_song = song_arg;
-    for (song_arg.instruments, 0..) |instrument, i| {
+    for (song_arg.instruments.items, 0..) |instrument, i| {
         synth.setInstrument(&instrument, i);
     }
 }
@@ -42,9 +42,9 @@ fn generate() f32 {
 
     const current_row_index = @floor(current_pos_in_pattern);
     if (@floor(current_pos_in_pattern - pos_delta) != current_row_index) {
-        for (current_song.rows[0].cols, 0..) |pattern_id_opt, channel_index| {
+        for (current_song.rows.items[0].cols, 0..) |pattern_id_opt, channel_index| {
             if (pattern_id_opt) |pattern_id| {
-                const pattern = current_song.channels[channel_index].patterns[pattern_id];
+                const pattern = current_song.channels.items[channel_index].patterns.items[pattern_id];
                 if (pattern.rows[@intFromFloat(current_row_index)].note) |note| {
                     synth.playNote(note, channel_index);
                 }

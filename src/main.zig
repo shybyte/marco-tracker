@@ -9,12 +9,12 @@ const sdtx = sokol.debugtext;
 
 const keymap = @import("./keymap.zig");
 const synth = @import("./synth/synth.zig");
-const SYSTEM = @import("./songs/system.zig").SYSTEM;
 const SAMPLE_RATE = @import("./constants.zig").SAMPLE_RATE;
 const ui = @import("./ui/ui.zig");
 const song_splayer = @import("./player.zig");
 const storage = @import("./storage.zig");
-const Song = @import("./song.zig").Song;
+const song_module = @import("./song.zig");
+const Song = song_module.Song;
 const midi = @import("./midi.zig");
 const ENABLE_MIDI = @import("./constants.zig").ENABLE_MIDI;
 const ENABLE_FILES = @import("./constants.zig").ENABLE_FILES;
@@ -30,8 +30,6 @@ const state = struct {
 };
 
 var pass_action: sg.PassAction = .{};
-
-var parsed_song: ?std.json.Parsed(Song) = null;
 
 // font indices
 const C64 = 0;
@@ -73,14 +71,15 @@ export fn init() void {
     if (ENABLE_FILES) {
         const song_or_err = storage.loadSong(std.heap.page_allocator);
         if (song_or_err) |song| {
-            parsed_song = song;
-            song_splayer.setSong(song.value);
+            song_splayer.setSong(song);
         } else |err| {
             std.log.debug("Error while loading song file: {}", .{err});
-            song_splayer.setSong(SYSTEM);
+            song_splayer.setSong(song_module.createEmptySong() catch {
+                return;
+            });
         }
     } else {
-        song_splayer.setSong(SYSTEM);
+        song_splayer.setSong(song_module.createEmptySong());
     }
 
     saudio.setup(.{
@@ -144,7 +143,7 @@ export fn input(event: ?*const sapp.Event) void {
                     switch (ev.key_code) {
                         .W => {
                             if (ENABLE_FILES) {
-                                storage.saveSong(song_splayer.getSong()) catch |err| {
+                                storage.saveSong(song_splayer.getSong(), std.heap.page_allocator) catch |err| {
                                     std.log.debug("Error {}", .{err});
                                 };
                             }
@@ -167,8 +166,7 @@ export fn cleanup() void {
     if (ENABLE_MIDI) midi.shutdown();
     saudio.shutdown();
     sg.shutdown();
-
-    if (parsed_song) |song| song.deinit();
+    song_splayer.getSong().deinit();
 }
 
 pub fn main() void {
