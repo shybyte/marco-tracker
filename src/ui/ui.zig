@@ -18,6 +18,7 @@ const song_module = @import("../song.zig");
 const Pattern = song_module.Pattern;
 const FONT_SCALE_FACTOR = @import("../constants.zig").FONT_SCALE_FACTOR;
 
+var song_row_index: usize = 0;
 var channel_index: usize = 0;
 var pattern_edit_row_index: usize = 0;
 var row_step: usize = 0;
@@ -30,14 +31,19 @@ var chain_command: ?ChainCommand = null;
 
 var ui_context: ui_utils.Context = .{};
 
+var default_pattern: Pattern = song_module.EMTPY_PATTERN;
+var default_inst: song_module.Instrument = .{};
+
 pub fn draw() void {
     drawSongRows();
 
     const song = song_player.getSong();
     for (song.rows.items[0].cols, 0..) |pattern_id_opt, i| {
         const pattern_id = pattern_id_opt orelse 0;
+        const patterns = song.channels.items[i].patterns.items;
+        const pattern = if (pattern_id < patterns.len) &patterns[pattern_id] else &default_pattern;
         draw_pattern(
-            &song.channels.items[i].patterns.items[pattern_id],
+            pattern,
             song_player.getCurrentPatternPlayingPos(),
             pattern_edit_row_index,
             channel_index == i,
@@ -45,7 +51,8 @@ pub fn draw() void {
         );
     }
 
-    const inst = &song_player.getSong().instruments.items[channel_index];
+    const instruments = song_player.getSong().instruments.items;
+    const inst = if (channel_index < instruments.len) &instruments[channel_index] else &default_inst;
     inst_editor.draw(ui_context, inst, .{ .x = 30 });
     synth.setInstrument(inst, channel_index);
 
@@ -90,8 +97,6 @@ pub fn onInput(event: ?*const sapp.Event) void {
     }
 
     // std.log.info("modifiers: {}", .{ev.modifiers});
-    var current_pattern = song_player.getSong().channels.items[0].patterns.items[0];
-
     if (ev.type == .KEY_DOWN) {
         if (chain_command) |command| {
             switch (command) {
@@ -133,10 +138,10 @@ pub fn onInput(event: ?*const sapp.Event) void {
                 edit_mode = !edit_mode;
             },
             .UP => {
-                pattern_edit_row_index = (pattern_edit_row_index + current_pattern.rows.len - 1) % current_pattern.rows.len;
+                pattern_edit_row_index = (pattern_edit_row_index + song_module.PATTEN_LENGTH - 1) % song_module.PATTEN_LENGTH;
             },
             .DOWN => {
-                pattern_edit_row_index = (pattern_edit_row_index + 1) % current_pattern.rows.len;
+                pattern_edit_row_index = (pattern_edit_row_index + 1) % song_module.PATTEN_LENGTH;
             },
             .LEFT => {
                 channel_index = (channel_index + song_module.CHANNEL_NUM - 1) % song_module.CHANNEL_NUM;
@@ -145,13 +150,17 @@ pub fn onInput(event: ?*const sapp.Event) void {
                 channel_index = (channel_index + 1) % song_module.CHANNEL_NUM;
             },
             .DELETE => {
-                current_pattern.rows[pattern_edit_row_index].note = null;
-                pattern_edit_row_index = (pattern_edit_row_index + row_step) % current_pattern.rows.len;
+                if (getCurrentPatternEnsured()) |current_pattern| {
+                    current_pattern.rows[pattern_edit_row_index].note = null;
+                    pattern_edit_row_index = (pattern_edit_row_index + row_step) % current_pattern.rows.len;
+                } else |err| {
+                    std.log.err("Error {}", .{err});
+                }
             },
             else => {
                 std.log.info("key_code: {}", .{ev.key_code});
                 if (keymap.get_note_for_key(ev.key_code, octave)) |note| {
-                    onNoteInput(note);
+                    onNoteInput(note) catch {};
                 }
             },
         }
@@ -163,15 +172,29 @@ pub fn onMidiInput(event: midi.MidiEvent) void {
     const note_on_opt = event.getNoteOn();
     if (note_on_opt) |note_on| {
         std.log.debug("NoteOn {}", .{note_on});
-        onNoteInput(note_on);
+        onNoteInput(note_on) catch {};
     }
 }
 
-pub fn onNoteInput(note: Note) void {
+fn getCurrentPatternEnsured() !*Pattern {
+    var song = song_player.getSong();
+    var channel = &song.channels.items[channel_index];
+    var song_row = &song.rows.items[song_row_index];
+    const pattern_index = song_row.cols[channel_index] orelse blk: {
+        song_row.cols[channel_index] = 0;
+        break :blk 0;
+    };
+
+    return channel.ensurePattern(pattern_index);
+}
+
+pub fn onNoteInput(note: Note) !void {
     if (edit_mode) {
-        var current_pattern = &song_player.getSong().channels.items[channel_index].patterns.items[0];
+        const current_pattern = try getCurrentPatternEnsured();
         current_pattern.rows[pattern_edit_row_index].note = note;
+
         pattern_edit_row_index = (pattern_edit_row_index + row_step) % current_pattern.rows.len;
     }
+
     synth.playNote(note, channel_index);
 }

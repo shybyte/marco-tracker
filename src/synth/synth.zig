@@ -14,8 +14,10 @@ pub const Voice = struct {
 
 var voice_1 = Voice{};
 var voice_2 = Voice{};
+var voice_3 = Voice{};
+var voice_4 = Voice{};
 
-pub var voices: [2]*Voice = [2]*Voice{ &voice_1, &voice_2 };
+pub var voices: [4]*Voice = [_]*Voice{ &voice_1, &voice_2, &voice_3, &voice_4 };
 
 pub fn playNote(note: Note, channel: usize) void {
     var voice = voices[channel];

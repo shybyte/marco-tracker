@@ -14,6 +14,16 @@ pub const PatternRow = struct {
 
 pub const Channel = struct {
     patterns: std.ArrayList(Pattern),
+
+    const Self = @This();
+
+    pub fn ensurePattern(self: *Self, patternIndex: usize) !*Pattern {
+        if (patternIndex >= self.patterns.items.len) {
+            try self.patterns.resize(patternIndex + 1);
+            self.patterns.items[patternIndex] = EMTPY_PATTERN;
+        }
+        return &self.patterns.items[patternIndex];
+    }
 };
 
 pub const Song = struct {
@@ -47,6 +57,7 @@ pub const Instrument = struct {
     adsr_release: f32 = 0.5,
 };
 
+pub const EMTPY_PATTERN: Pattern = .{ .rows = [_]PatternRow{.{ .note = null }} ** PATTEN_LENGTH };
 const PATTERNS: [0]Pattern = [_]Pattern{};
 const INSTRUMNETS: [0]Instrument = [_]Instrument{};
 const SONG_ROWS = [_]SongRow{.{ .cols = [4]PatternID{ 0, null, null, null } }};
