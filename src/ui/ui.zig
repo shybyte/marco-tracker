@@ -35,9 +35,11 @@ var default_pattern: Pattern = song_module.EMTPY_PATTERN;
 var default_inst: song_module.Instrument = .{};
 
 pub fn draw() void {
+    const song = song_player.getSong();
+    song.ensureTrailingEmptyRow();
+
     drawSongRows();
 
-    const song = song_player.getSong();
     for (song.rows.items[0].cols, 0..) |pattern_id_opt, i| {
         const pattern_id = pattern_id_opt orelse 0;
         const patterns = song.channels.items[i].patterns.items;

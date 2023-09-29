@@ -1,6 +1,7 @@
 const std = @import("std");
 const Note = @import("./notes.zig").Note;
 const OscType = @import("./synth/osc.zig").OscType;
+const utils = @import("utils.zig");
 
 pub const CHANNEL_NUM = 4;
 
@@ -37,6 +38,12 @@ pub const Song = struct {
 
     const Self = @This();
 
+    pub fn ensureTrailingEmptyRow(self: *Self) void {
+        if (self.rows.items.len == 0 or utils.containsNonNullValues(self.rows.getLast().cols)) {
+            self.rows.append(EMTPY_SONG_ROW) catch {};
+        }
+    }
+
     pub fn deinit(self: Self) void {
         self.rows.deinit();
 
@@ -54,6 +61,8 @@ pub const PatternID = ?usize;
 pub const SongRow = struct {
     cols: [CHANNEL_NUM]PatternID,
 };
+
+pub const EMTPY_SONG_ROW: SongRow = .{ .cols = [_]PatternID{null} ** CHANNEL_NUM };
 
 pub const Instrument = struct {
     osc_type: OscType = OscType.saw,
