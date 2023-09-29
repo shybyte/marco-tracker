@@ -41,7 +41,7 @@ pub fn draw() void {
     for (song.rows.items[0].cols, 0..) |pattern_id_opt, i| {
         const pattern_id = pattern_id_opt orelse 0;
         const patterns = song.channels.items[i].patterns.items;
-        const pattern = if (pattern_id < patterns.len) &patterns[pattern_id] else &default_pattern;
+        const pattern = if (pattern_id_opt != null and pattern_id < patterns.len) &patterns[pattern_id] else &default_pattern;
         draw_pattern(
             pattern,
             song_player.getCurrentPatternPlayingPos(),
@@ -60,29 +60,64 @@ pub fn draw() void {
     ui_context.current_event = null;
 }
 
+const SONG_ROWS_POS = ui_utils.Point2D{ .x = 0, .y = 0 };
+const EMPTY_SONG_ROW_STRING = "-- ";
+const SONG_ROW_WIDTH = EMPTY_SONG_ROW_STRING.len;
+
 pub fn drawSongRows() void {
     // std.log.debug("Width/Height: {d} {d}", .{ sapp.widthf(), sapp.heightf() });
     sdtx.canvas(sapp.widthf() / FONT_SCALE_FACTOR, sapp.heightf() / FONT_SCALE_FACTOR);
-    sdtx.origin(0, 0);
+    sdtx.origin(SONG_ROWS_POS.x, SONG_ROWS_POS.y);
+    var text_pos = SONG_ROWS_POS;
 
     sdtx.home();
 
     const song = song_player.getSong();
 
-    for (song.rows.items, 0..) |row, row_i| {
+    for (song.rows.items, 0..) |*row, row_i| {
         _ = row_i;
         for (row.cols, 0..) |col, col_i| {
-            sdtx.color3f(0.5, 0.5, 0.6);
-            if (col) |pattern_id| {
-                if (col_i == channel_index) {
-                    sdtx.color3f(0.8, 0.8, 0.9);
+            if (col_i == channel_index) {
+                sdtx.color3f(0.8, 0.8, 0.9);
+            } else {
+                sdtx.color3f(0.5, 0.5, 0.6);
+            }
+
+            const is_under_mouse = ui_utils.is_in_text_rect(ui_context.mouse_pos, text_pos, SONG_ROW_WIDTH);
+            if (is_under_mouse) {
+                sdtx.color3f(1, 0.3, 1);
+                if (ui_context.current_event) |ev| {
+                    if (ev.type == .MOUSE_DOWN) {
+                        channel_index = col_i;
+                    } else if (ev.type == .MOUSE_SCROLL) {
+                        var new_pattern_index_opt: ?usize = if (col) |pattern_id|
+                            if (ev.scroll_y > 0)
+                                pattern_id + 1
+                            else if (pattern_id > 0)
+                                pattern_id - 1
+                            else
+                                null
+                        else
+                            0;
+                        if (new_pattern_index_opt) |new_pattern_index| {
+                            song.channels.items[col_i].ensurePatternNoReturn(new_pattern_index) catch {};
+                        }
+                        row.cols[col_i] = new_pattern_index_opt;
+                    }
                 }
+            }
+
+            if (col) |pattern_id| {
                 sdtx.print("{d:0>2} ", .{pattern_id});
             } else {
-                sdtx.print("-- ", .{});
+                sdtx.print(EMPTY_SONG_ROW_STRING, .{});
             }
+
+            text_pos.x += SONG_ROW_WIDTH;
         }
         sdtx.crlf();
+        text_pos.y += 1;
+        text_pos.x = 0;
     }
 }
 

@@ -17,12 +17,16 @@ pub const Channel = struct {
 
     const Self = @This();
 
-    pub fn ensurePattern(self: *Self, patternIndex: usize) !*Pattern {
-        if (patternIndex >= self.patterns.items.len) {
-            try self.patterns.resize(patternIndex + 1);
-            self.patterns.items[patternIndex] = EMTPY_PATTERN;
+    pub fn ensurePattern(self: *Self, pattern_index: usize) !*Pattern {
+        try self.ensurePatternNoReturn(pattern_index);
+        return &self.patterns.items[pattern_index];
+    }
+
+    pub fn ensurePatternNoReturn(self: *Self, pattern_index: usize) !void {
+        if (pattern_index >= self.patterns.items.len) {
+            try self.patterns.resize(pattern_index + 1);
+            self.patterns.items[pattern_index] = EMTPY_PATTERN;
         }
-        return &self.patterns.items[patternIndex];
     }
 };
 
