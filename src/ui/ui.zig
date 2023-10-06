@@ -18,7 +18,6 @@ const song_module = @import("../song.zig");
 const Pattern = song_module.Pattern;
 const FONT_SCALE_FACTOR = @import("../constants.zig").FONT_SCALE_FACTOR;
 
-var song_row_index: usize = 0;
 var channel_index: usize = 0;
 var pattern_edit_row_index: usize = 0;
 var row_step: usize = 0;
@@ -40,7 +39,7 @@ pub fn draw() void {
 
     drawSongRows();
 
-    for (song.rows.items[0].cols, 0..) |pattern_id_opt, i| {
+    for (song.rows.items[song_player.getCurrentSongRowIndex()].cols, 0..) |pattern_id_opt, i| {
         const pattern_id = pattern_id_opt orelse 0;
         const patterns = song.channels.items[i].patterns.items;
         const pattern = if (pattern_id_opt != null and pattern_id < patterns.len) &patterns[pattern_id] else &default_pattern;
@@ -216,7 +215,7 @@ pub fn onMidiInput(event: midi.MidiEvent) void {
 fn getCurrentPatternEnsured() !*Pattern {
     var song = song_player.getSong();
     var channel = &song.channels.items[channel_index];
-    var song_row = &song.rows.items[song_row_index];
+    var song_row = &song.rows.items[song_player.getCurrentPatternPlayingPos()];
     const pattern_index = song_row.cols[channel_index] orelse blk: {
         song_row.cols[channel_index] = 0;
         break :blk 0;
