@@ -11,7 +11,7 @@ const keymap = @import("./keymap.zig");
 const synth = @import("./synth/synth.zig");
 const SAMPLE_RATE = @import("./constants.zig").SAMPLE_RATE;
 const ui = @import("./ui/ui.zig");
-const song_splayer = @import("./player.zig");
+const song_player = @import("./player.zig");
 const storage = @import("./storage.zig");
 const song_module = @import("./song.zig");
 const Song = song_module.Song;
@@ -71,21 +71,21 @@ export fn init() void {
     if (ENABLE_FILES) {
         const song_or_err = storage.loadSong(std.heap.page_allocator);
         if (song_or_err) |song| {
-            song_splayer.setSong(song);
+            song_player.setSong(song);
         } else |err| {
             std.log.debug("Error while loading song file: {}", .{err});
-            song_splayer.setSong(song_module.createEmptySong() catch {
+            song_player.setSong(song_module.createEmptySong() catch {
                 return;
             });
         }
     } else {
-        song_splayer.setSong(song_module.createEmptySong());
+        song_player.setSong(song_module.createEmptySong());
     }
 
     saudio.setup(.{
         .buffer_frames = 512,
         .num_channels = 2,
-        .stream_cb = song_splayer.audio_stream_callback,
+        .stream_cb = song_player.audio_stream_callback,
         .sample_rate = SAMPLE_RATE,
         .logger = .{ .func = slog.func },
     });
@@ -130,20 +130,23 @@ export fn input(event: ?*const sapp.Event) void {
                 sapp.toggleFullscreen();
             },
             .F2 => {
-                song_splayer.start();
+                song_player.start(song_player.PlayMode.row);
+            },
+            .F3 => {
+                song_player.start(song_player.PlayMode.complete);
             },
             .F4 => {
-                song_splayer.stop();
+                song_player.stop();
             },
             .SPACE => {
-                song_splayer.togglePlaying();
+                song_player.togglePlaying();
             },
             else => {
                 if (ev.modifiers == sapp.modifier_alt) {
                     switch (ev.key_code) {
                         .W => {
                             if (ENABLE_FILES) {
-                                storage.saveSong(song_splayer.getSong(), std.heap.page_allocator) catch |err| {
+                                storage.saveSong(song_player.getSong(), std.heap.page_allocator) catch |err| {
                                     std.log.debug("Error {}", .{err});
                                 };
                             }
@@ -166,7 +169,7 @@ export fn cleanup() void {
     if (ENABLE_MIDI) midi.shutdown();
     saudio.shutdown();
     sg.shutdown();
-    song_splayer.getSong().deinit();
+    song_player.getSong().deinit();
 }
 
 pub fn main() void {

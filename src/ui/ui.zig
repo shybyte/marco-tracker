@@ -77,7 +77,9 @@ pub fn drawSongRows() void {
 
     for (song.rows.items, 0..) |*row, row_i| {
         for (row.cols, 0..) |col, col_i| {
-            if (col_i == channel_index) {
+            if (row_i == song_player.getCurrentSongRowIndex()) {
+                sdtx.color3f(1, 1, 1);
+            } else if (col_i == channel_index) {
                 sdtx.color3f(0.8, 0.8, 0.9);
             } else {
                 sdtx.color3f(0.5, 0.5, 0.6);

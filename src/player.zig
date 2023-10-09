@@ -2,9 +2,15 @@ const std = @import("std");
 const song_module = @import("./song.zig");
 const synth = @import("./synth/synth.zig");
 
+pub const PlayMode = enum {
+    complete,
+    row,
+};
+
 var current_song: song_module.Song = undefined;
 var is_playing = true;
 
+var playmode = PlayMode.complete;
 var song_row_index: usize = 0;
 var current_pos_in_pattern: f32 = 0;
 
@@ -19,9 +25,12 @@ pub fn getSong() *song_module.Song {
     return &current_song;
 }
 
-pub fn start() void {
+pub fn start(playmode_arg: PlayMode) void {
     is_playing = true;
-    song_row_index = 0;
+    playmode = playmode_arg;
+    if (playmode == PlayMode.complete) {
+        song_row_index = 0;
+    }
     current_pos_in_pattern = 0;
 }
 
@@ -67,7 +76,9 @@ fn generate() f32 {
 
     current_pos_in_pattern += pos_delta;
     if (current_pos_in_pattern >= song_module.PATTEN_LENGTH) {
-        song_row_index = (song_row_index + 1) % current_song.rows.items.len;
+        if (playmode == PlayMode.complete) {
+            song_row_index = (song_row_index + 1) % current_song.rows.items.len;
+        }
         current_pos_in_pattern = current_pos_in_pattern - song_module.PATTEN_LENGTH;
     }
 
