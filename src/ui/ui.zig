@@ -76,7 +76,6 @@ pub fn drawSongRows() void {
     const song = song_player.getSong();
 
     for (song.rows.items, 0..) |*row, row_i| {
-        _ = row_i;
         for (row.cols, 0..) |col, col_i| {
             if (col_i == channel_index) {
                 sdtx.color3f(0.8, 0.8, 0.9);
@@ -89,6 +88,7 @@ pub fn drawSongRows() void {
                 sdtx.color3f(1, 0.3, 1);
                 if (ui_context.current_event) |ev| {
                     if (ev.type == .MOUSE_DOWN) {
+                        song_player.setCurrentSongRowIndex(row_i);
                         channel_index = col_i;
                     } else if (ev.type == .MOUSE_SCROLL) {
                         var new_pattern_index_opt: ?usize = if (col) |pattern_id|

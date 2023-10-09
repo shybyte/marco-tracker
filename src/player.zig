@@ -41,6 +41,11 @@ pub fn getCurrentSongRowIndex() usize {
     return song_row_index;
 }
 
+pub fn setCurrentSongRowIndex(song_row_index_arg: usize) void {
+    song_row_index = song_row_index_arg;
+    current_pos_in_pattern = 0;
+}
+
 const pos_delta = 0.00018;
 
 fn generate() f32 {
