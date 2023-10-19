@@ -217,10 +217,11 @@ pub fn onMidiInput(event: midi.MidiEvent) void {
 fn getCurrentPatternEnsured() !*Pattern {
     var song = song_player.getSong();
     var channel = &song.channels.items[channel_index];
-    var song_row = &song.rows.items[song_player.getCurrentPatternPlayingPos()];
+    var song_row = &song.rows.items[song_player.getCurrentSongRowIndex()];
     const pattern_index = song_row.cols[channel_index] orelse blk: {
-        song_row.cols[channel_index] = 0;
-        break :blk 0;
+        const new_pattern_index = channel.patterns.items.len;
+        song_row.cols[channel_index] = new_pattern_index;
+        break :blk new_pattern_index;
     };
 
     return channel.ensurePattern(pattern_index);

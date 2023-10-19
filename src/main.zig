@@ -90,6 +90,8 @@ export fn init() void {
         .logger = .{ .func = slog.func },
     });
 
+    std.log.debug("saudio {} {} {}", .{ saudio.sampleRate(), saudio.channels(), saudio.bufferFrames() });
+
     if (ENABLE_MIDI) midi.init();
 }
 
